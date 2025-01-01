@@ -24,8 +24,6 @@ cd ~/.dotfiles
   - `zsh-syntax-highlighting/`: ZSH syntax highlighting plugin
 - `.config/`: System configuration files
 - `zsh/`: ZSH configuration
-  - `config/`: ZSH configuration files
-  - `themes/`: Custom ZSH themes
 
 ## Manual Update
 
