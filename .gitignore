@@ -1,0 +1,29 @@
+# Core dotfiles
+!.gitignore
+!.zshrc
+!.gitmodules
+!README.md
+!install.sh
+
+# Config files
+!.config/
+.config/*
+
+# ZSH configuration
+!zsh/
+!zsh/config/
+!zsh/themes/
+
+# Submodules directory
+!submodules/
+
+# Ignore common system files
+.DS_Store
+*.swp
+*.swols
+
+# Ignore test/temp files
+*~
+*.exe
+*.tmp
+broken-symlink
