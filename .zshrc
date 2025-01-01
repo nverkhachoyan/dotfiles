@@ -1,9 +1,9 @@
 DOTFILES="$HOME/.dotfiles"
-CONFIG="$HOME/.config"
+CONFIG="$DOTFILES/.config"
 
 # Oh My Zsh Configuration
 export ZSH="$DOTFILES/submodules/oh-my-zsh"
-export ZSH_CUSTOM="$CONFIG/oh-my-zsh"
+export ZSH_CUSTOM="$DOTFILES/.config/oh-my-zsh"
 
 # Source all zsh configurations
 for config_file (~/.dotfiles/zsh/*.zsh(N)) source $config_file

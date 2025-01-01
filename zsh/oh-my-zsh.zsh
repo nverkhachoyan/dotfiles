@@ -1,5 +1,4 @@
-# Oh My Zsh Settings
-ZSH_THEME="amuse-custom"
+ZSH_THEME="amuse"
 HYPHEN_INSENSITIVE="true"
 COMPLETION_WAITING_DOTS="true"
 zstyle ':omz:update' mode auto
@@ -14,3 +13,5 @@ plugins=(
     zsh-autosuggestions
     zsh-syntax-highlighting
 )
+
+source $ZSH/oh-my-zsh.sh
