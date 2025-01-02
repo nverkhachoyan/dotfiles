@@ -10,17 +10,15 @@ export load-env() {
         return 1
     fi
 
-    # Check 1Password authentication
-    if ! op whoami &>/dev/null; then
-        echo "Authenticating with 1Password..."
-        eval $(op signin)
-        if [ $? -ne 0 ]; then
+    echo "Checking 1Password connection..."
+    if ! op vault list &>/dev/null; then
+        echo "Please authenticate with 1Password..."
+        if ! eval $(op signin); then
             echo "Error: Failed to sign in to 1Password"
             return 1
         fi
     fi
-    
-    # Get list of all items
+
     echo "Fetching items from 1Password..."
     local items
     items=$(op item list --vault Development --format json 2>/dev/null)
@@ -29,7 +27,6 @@ export load-env() {
         return 1
     fi
 
-    # Create menu of items
     echo "\nAvailable environment configurations:"
     local titles
     titles=($(echo "$items" | jq -r '.[].title'))
