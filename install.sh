@@ -2,7 +2,7 @@
 set -e # Exit on any error
 
 DOTFILES="$HOME/.dotfiles"
-CONFIG="$DOTFILES/.config"
+CONFIG="$HOME/.config"
 
 echo "Setting up dotfiles..."
 
@@ -24,10 +24,6 @@ ln -sf "$DOTFILES/nvim" "$CONFIG/nvim"
 ln -sf "$DOTFILES/tmux" "$CONFIG/tmux"
 
 # Zsh config
-ln -sf "$DOTFILES/.zshrc" "$HOME/.zshrc"
-
-# Link the entire .config directory
-ln -sfn "$CONFIG" "$HOME/.config"
+ln -sf "$DOTFILES/zsh/.zshrc" "$HOME/.zshrc"
 
 echo "Done! 🎉"
-
