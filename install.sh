@@ -17,18 +17,11 @@ fi
 
 echo "Creating symlinks..."
 
-# Create oh-my-zsh custom plugins directory
-mkdir -p "$CONFIG/oh-my-zsh/plugins"
-
-# Zsh plugins
-ln -sf "$DOTFILES/submodules/zsh-autosuggestions" "$CONFIG/oh-my-zsh/plugins/zsh-autosuggestions"
-ln -sf "$DOTFILES/submodules/zsh-syntax-highlighting" "$CONFIG/oh-my-zsh/plugins/zsh-syntax-highlighting"
-
 # Neovim
-ln -sf "$DOTFILES/submodules/nvim" "$CONFIG/nvim"
+ln -sf "$DOTFILES/nvim" "$CONFIG/nvim"
 
 # Tmux
-ln -sf "$DOTFILES/submodules/tmux" "$CONFIG/tmux"
+ln -sf "$DOTFILES/tmux" "$CONFIG/tmux"
 
 # Zsh config
 ln -sf "$DOTFILES/.zshrc" "$HOME/.zshrc"
