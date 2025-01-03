@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e  # Exit on any error
+set -e # Exit on any error
 
 DOTFILES="$HOME/.dotfiles"
 CONFIG="$DOTFILES/.config"
@@ -11,8 +11,8 @@ mkdir -p "$HOME/.config"
 
 echo "Initializing submodules..."
 if ! git submodule update --init --recursive; then
-    echo "Failed to initialize submodules" >&2
-    exit 1
+  echo "Failed to initialize submodules" >&2
+  exit 1
 fi
 
 echo "Creating symlinks..."
@@ -27,6 +27,9 @@ ln -sf "$DOTFILES/submodules/zsh-syntax-highlighting" "$CONFIG/oh-my-zsh/plugins
 # Neovim
 ln -sf "$DOTFILES/submodules/nvim" "$CONFIG/nvim"
 
+# Tmux
+ln -sf "$DOTFILES/submodules/tmux" "$CONFIG/tmux"
+
 # Zsh config
 ln -sf "$DOTFILES/.zshrc" "$HOME/.zshrc"
 
@@ -34,3 +37,4 @@ ln -sf "$DOTFILES/.zshrc" "$HOME/.zshrc"
 ln -sfn "$CONFIG" "$HOME/.config"
 
 echo "Done! 🎉"
+
