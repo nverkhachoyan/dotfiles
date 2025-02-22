@@ -15,16 +15,6 @@ cd ~/.dotfiles
 ./install.sh
 ```
 
-## Structure
-
-- `submodules/`: External dependencies
-  - `nvim/`: Neovim configuration
-  - `oh-my-zsh/`: Oh My Zsh
-  - `zsh-autosuggestions/`: ZSH autosuggestions plugin
-  - `zsh-syntax-highlighting/`: ZSH syntax highlighting plugin
-- `.config/`: System configuration files
-- `zsh/`: ZSH configuration
-
 ## Manual Update
 
 To update all submodules to their latest versions:
