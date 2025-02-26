@@ -23,7 +23,10 @@ ln -sf "$DOTFILES/nvim" "$CONFIG/nvim"
 # Tmux
 ln -sf "$DOTFILES/tmux" "$CONFIG/tmux"
 
-# Zsh config
+# Zsh 
 ln -sf "$DOTFILES/zsh/.zshrc" "$HOME/.zshrc"
+
+# Ghostty 
+ln -sf "$DOTFILES/ghostty" "$CONFIG/ghostty"
 
 echo "Done! 🎉"
