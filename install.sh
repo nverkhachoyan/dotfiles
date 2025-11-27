@@ -29,7 +29,4 @@ ln -sf "$DOTFILES/zsh/.zshrc" "$HOME/.zshrc"
 # Ghostty 
 ln -sf "$DOTFILES/ghostty" "$CONFIG/ghostty"
 
-# Aerospace
-ln -sf "$DOTFILES/aerospace/.aerospace.toml .aerospace.toml"
-
 echo "Done! 🎉"

@@ -1,46 +1,34 @@
-font-family = Monaspace Krypton
+font-family = "JetBrainsMono Nerd Font Mono"
 font-size = 20
 
-macos-titlebar-style = tabs 
-window-padding-x = 15
-window-padding-y = 15
+# smooth-reading features
+font-feature = "-calt" 
+font-feature = "-liga" 
+font-thicken = true
+
+# --- Window & Appearance ---
 window-theme = dark
-background-opacity = 0.95
 background-blur = 20
-mouse-hide-while-typing = true
-copy-on-select = true
-macos-option-as-alt = true
-macos-titlebar-proxy-icon = hidden 
+
+window-padding-x = 12
+window-padding-y = 12
+
+# Clean up the macOS header
+macos-titlebar-style = tabs 
+macos-titlebar-proxy-icon = hidden
+
+# --- Behavior ---
 maximize = true
+copy-on-select = true
+mouse-hide-while-typing = true
+confirm-close-surface = true
+shell-integration = detect
 
-background = #0c0a16
-foreground = #f2f0ff
-cursor-color = #d4d4d4
-cursor-text = #ffffff
-selection-background = #4f4d8c
-selection-foreground = #ffffff
+# --- Keyboard ---
+macos-option-as-alt = true
 
-palette = 0=#0c0a16
-palette = 1=#ff6b6b
-palette = 2=#95d183
-palette = 3=#ffd7a9
-palette = 4=#08a0c2
-palette = 5=#f194d9
-palette = 6=#c59fff
-palette = 7=#eee4ff
-palette = 8=#1a1436
-palette = 9=#ff8f8f
-palette = 10=#aae196
-palette = 11=#ffe3c4
-palette = 12=#94eeff
-palette = 13=#f4b4e3
-palette = 14=#d4c4ff
-palette = 15=#ffffff
-palette = 16=#4deae8
-
-minimum-contrast = 1.5
+# --- Cursor ---
 cursor-style = block
 cursor-style-blink = true
-shell-integration = detect
-confirm-close-surface = true
-quit-after-last-window-closed = false
+cursor-color = #d4d4d4
+cursor-text = #000000 
