@@ -14,11 +14,3 @@ cd ~/.dotfiles
 ```bash
 ./install.sh
 ```
-
-## Manual Update
-
-To update all submodules to their latest versions:
-
-```bash
-git submodule update --remote
-```
