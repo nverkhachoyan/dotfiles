@@ -1,0 +1,1 @@
+/Users/nverkhachoyan/.dotfiles/tmux
