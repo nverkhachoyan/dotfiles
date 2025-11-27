@@ -29,7 +29,8 @@ source <(fzf --zsh)
 # zoxide
 eval "$(zoxide init zsh)"
 
-
+# direnv
+eval "$(direnv hook zsh)"
 
 # Added by Antigravity
 export PATH="/Users/nverkhachoyan/.antigravity/antigravity/bin:$PATH"

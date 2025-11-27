@@ -9,11 +9,8 @@ echo "Setting up dotfiles..."
 # Create .config directory in home if it doesn't exist
 mkdir -p "$HOME/.config"
 
-echo "Initializing submodules..."
-if ! git submodule update --init --recursive; then
-  echo "Failed to initialize submodules" >&2
-  exit 1
-fi
+# Global gitignore
+git config --global core.excludesFile "~/.gitignore_global"
 
 echo "Creating symlinks..."
 
