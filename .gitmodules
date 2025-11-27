@@ -1,12 +1,3 @@
-[submodule "tmux"]
-	path = tmux
-	url = https://github.com/nverkhachoyan/tmux.git
-[submodule "nvim"]
-	path = nvim
-	url = https://github.com/nverkhachoyan/nvim.git
-[submodule "zsh"]
-	path = zsh
-	url = https://github.com/nverkhachoyan/zsh.git
 [submodule "plugins/zsh/zsh-autosuggestions"]
 	path = plugins/zsh/zsh-autosuggestions
 	url = https://github.com/zsh-users/zsh-autosuggestions
