@@ -1,0 +1,68 @@
+add_newline = false
+
+format = """
+$directory\
+$git_branch\
+$git_status\
+$character
+"""
+
+[directory]
+style = "bold blue"
+truncation_length = 3
+truncate_to_repo = true
+fish_style_pwd_dir_length = 1
+
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"
+vicmd_symbol = "[❮](bold yellow)"
+
+[git_branch]
+symbol = "󰊢 "
+style = "bold white"
+format = "[$symbol$branch]($style) "
+
+[git_status]
+style = "red"
+format = "([$all_status$ahead_behind]($style) )"
+conflicted = "!"
+ahead = "⇡"
+behind = "⇣"
+diverged = "⇕"
+untracked = "?"
+stashed = "$"
+modified = "~"
+staged = "+"
+renamed = "»"
+deleted = "✘"
+
+[package]
+disabled = true
+
+[nodejs]
+disabled = true
+
+[python]
+disabled = true
+
+[lua]
+disabled = true
+
+[golang]
+disabled = true
+
+[rust]
+disabled = true
+
+[docker_context]
+disabled = true
+
+[kubernetes]
+disabled = true
+
+[cmd_duration]
+disabled = true
+
+[time]
+disabled = true

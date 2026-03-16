@@ -1,0 +1,38 @@
+[[ $- == *i* ]] || return
+
+[ -f "$HOME/.config/shell/env.sh" ] && . "$HOME/.config/shell/env.sh"
+[ -f "$HOME/.config/shell/aliases.sh" ] && . "$HOME/.config/shell/aliases.sh"
+
+HISTFILE="$HOME/.config/bash/history"
+HISTFILESIZE=100000
+HISTSIZE=10000
+
+shopt -s histappend
+shopt -s extglob
+shopt -s globstar
+shopt -s checkjobs
+
+if [[ -n "${GHOSTTY_RESOURCES_DIR:-}" ]]; then
+  builtin source "${GHOSTTY_RESOURCES_DIR}/shell-integration/bash/ghostty.bash"
+fi
+
+if command -v direnv >/dev/null 2>&1; then
+  eval "$(direnv hook bash)"
+fi
+
+if command -v fzf >/dev/null 2>&1 && [[ -t 0 && -t 1 && :$SHELLOPTS: =~ :(vi|emacs): ]]; then
+  eval "$(fzf --bash)"
+fi
+
+if command -v zoxide >/dev/null 2>&1; then
+  eval "$(zoxide init bash)"
+  alias cd='z'
+fi
+
+if command -v starship >/dev/null 2>&1; then
+  eval "$(starship init bash)"
+fi
+
+bind '"\e[A": history-search-backward'
+bind '"\e[B": history-search-forward'
+bind '"\C-l": clear-screen'

@@ -1,0 +1,42 @@
+[commit]
+	gpgsign = false
+
+[core]
+	pager = delta
+
+[credential "https://gist.github.com"]
+	helper =
+	helper = !gh auth git-credential
+
+[credential "https://github.com"]
+	helper =
+	helper = !gh auth git-credential
+
+[fetch]
+	prune = true
+
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	process = git-lfs filter-process
+	required = true
+	smudge = git-lfs smudge -- %f
+
+[init]
+	defaultBranch = main
+
+[interactive]
+	diffFilter = delta --color-only
+
+[merge]
+	conflictstyle = zdiff3
+
+[pull]
+	ff = only
+	rebase = true
+
+[rebase]
+	autoStash = true
+
+[user]
+	email = khachoyannver@gmail.com
+	name = Nver Khachoyan
