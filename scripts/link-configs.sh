@@ -53,6 +53,7 @@ link_path "$repo_root/config/lazydocker/config.yml" "$HOME/.config/lazydocker/co
 link_path "$repo_root/config/nvim" "$HOME/.config/nvim"
 link_path "$repo_root/config/shell/aliases.sh" "$HOME/.config/shell/aliases.sh"
 link_path "$repo_root/config/shell/env.sh" "$HOME/.config/shell/env.sh"
+link_path "$repo_root/config/shell/env.d" "$HOME/.config/shell/env.d"
 link_path "$repo_root/config/ssh/config" "$HOME/.config/ssh/config"
 link_path "$repo_root/config/starship.toml" "$HOME/.config/starship.toml"
 link_path "$repo_root/config/tmux/tmux.conf" "$HOME/.config/tmux/tmux.conf"

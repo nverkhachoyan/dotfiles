@@ -18,16 +18,6 @@ export GOPATH="$HOME/Dev/go"
 export CARGO_HOME="$XDG_DATA_HOME/cargo"
 export BUN_INSTALL="${BUN_INSTALL:-$HOME/.bun}"
 
-case "$(uname -s 2>/dev/null || printf unknown)" in
-  Darwin)
-    export PNPM_HOME="$HOME/Library/pnpm"
-    ;;
-  Linux)
-    export PNPM_HOME="$XDG_DATA_HOME/pnpm"
-    export QT_QPA_PLATFORMTHEME="${QT_QPA_PLATFORMTHEME:-gtk3}"
-    ;;
-esac
-
 path_prepend() {
   [ -n "$1" ] || return
 
@@ -40,20 +30,42 @@ path_prepend() {
   esac
 }
 
-if [ -d "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin" ]; then
-  path_prepend "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin"
+DOTFILES_OS=""
+case "$(uname -s 2>/dev/null || printf unknown)" in
+  Darwin)
+    DOTFILES_OS="darwin"
+    ;;
+  Linux)
+    DOTFILES_OS="linux"
+    ;;
+esac
+export DOTFILES_OS
+
+if [ -n "$DOTFILES_OS" ] && [ -f "$XDG_CONFIG_HOME/shell/env.d/$DOTFILES_OS.sh" ]; then
+  # shellcheck source=/dev/null
+  . "$XDG_CONFIG_HOME/shell/env.d/$DOTFILES_OS.sh"
 fi
 
 path_prepend "$GOPATH/bin"
-path_prepend "$PNPM_HOME"
+path_prepend "${PNPM_HOME:-}"
 path_prepend "$CARGO_HOME/bin"
 path_prepend "$BUN_INSTALL/bin"
 path_prepend "$HOME/.lmstudio/bin"
 path_prepend "$HOME/.local/share/mise/shims"
 path_prepend "/usr/local/sbin"
 path_prepend "/usr/local/bin"
-path_prepend "/opt/homebrew/sbin"
-path_prepend "/opt/homebrew/bin"
+
+if [ -n "${DOTFILES_PLATFORM_PATHS:-}" ]; then
+  old_ifs="$IFS"
+  IFS=:
+  for platform_path in $DOTFILES_PLATFORM_PATHS; do
+    if [ -d "$platform_path" ]; then
+      path_prepend "$platform_path"
+    fi
+  done
+  IFS="$old_ifs"
+fi
+
 path_prepend "$HOME/bin"
 path_prepend "$HOME/.local/bin"
 

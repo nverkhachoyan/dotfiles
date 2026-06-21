@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+# shellcheck source=scripts/lib/os.sh
+source "$repo_root/scripts/lib/os.sh"
+
+os="$(detect_os)"
+case "$os" in
+  darwin | linux)
+    exec "$repo_root/scripts/bootstrap-$os.sh" "$@"
+    ;;
+  *)
+    printf 'Unsupported OS: %s\n' "$os" >&2
+    exit 1
+    ;;
+esac
