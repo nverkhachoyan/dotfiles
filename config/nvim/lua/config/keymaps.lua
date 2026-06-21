@@ -31,5 +31,5 @@ map("n", "<leader>ne", function()
 end, { desc = "Collapse keep buffers" })
 
 map("n", "<leader>tn", function()
-	vim.opt.relativenumber = not vim.opt.relativenumber:get()
+	vim.wo.relativenumber = not vim.wo.relativenumber
 end, { desc = "Toggle relative numbers" })
