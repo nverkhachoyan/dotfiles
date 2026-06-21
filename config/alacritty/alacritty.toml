@@ -1,41 +1,15 @@
+[general]
+import = [
+    "~/.config/alacritty/color.toml"
+]
+
 [bell]
 duration = 0
 
-[colors.bright]
-black = "#5c6370"
-blue = "#a7d9ff"
-cyan = "#5c7ba3"
-green = "#a2e5a0"
-magenta = "#3d8197"
-red = "#e57e7e"
-white = "#ffffff"
-yellow = "#efe9b3"
-
-[colors.cursor]
-cursor = "#9dcbfb"
-text = "#101418"
-
-[colors.normal]
-black = "#101418"
-blue = "#4087bc"
-cyan = "#9dcbfb"
-green = "#8ed88c"
-magenta = "#839fbc"
-red = "#d75a59"
-white = "#abb2bf"
-yellow = "#e0d99d"
-
-[colors.primary]
-background = "#101418"
-foreground = "#e0e2e8"
-
-[colors.selection]
-background = "#124a73"
-text = "#e0e2e8"
-
 [cursor]
-blink_interval = 500
-unfocused_hollow = true
+blink_interval = 450
+thickness = 0.18
+# unfocused_hollow = true
 
 [cursor.style]
 blinking = "On"
@@ -70,12 +44,12 @@ mods = "Control|Shift"
 [[keyboard.bindings]]
 action = "DecreaseFontSize"
 key = "Minus"
-mods = "Control"
+mods = "Control|Shift"
 
 [[keyboard.bindings]]
 action = "ResetFontSize"
 key = "Key0"
-mods = "Control"
+mods = "Control|Shift"
 
 [[keyboard.bindings]]
 chars = "\n"
@@ -86,17 +60,17 @@ mods = "Shift"
 hide_when_typing = true
 
 [scrolling]
-history = 3023
-multiplier = 3
+history = 50000
+multiplier = 4
 
 [selection]
-save_to_clipboard = false
+save_to_clipboard = true
 
 [terminal]
 osc52 = "CopyPaste"
 
 [window]
-blur = true
+blur = false
 dynamic_padding = true
 dynamic_title = true
 opacity = 1.0
@@ -104,5 +78,5 @@ option_as_alt = "Both"
 startup_mode = "Maximized"
 
 [window.padding]
-x = 12
-y = 12
+x = 10
+y = 10

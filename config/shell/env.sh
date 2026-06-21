@@ -6,10 +6,6 @@ export EDITOR="${EDITOR:-nvim}"
 export VISUAL="${VISUAL:-nvim}"
 export HOMEBREW_NO_ENV_HINTS=1
 
-export FLAKE_PATH="${FLAKE_PATH:-$HOME/Dev/personal/nix-config}"
-export HOST_NAME="${HOST_NAME:-$(hostname -s 2>/dev/null || hostname 2>/dev/null || printf unknown)}"
-
-export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
 export AWS_CONFIG_FILE="${AWS_CONFIG_FILE:-$XDG_CONFIG_HOME/aws/config}"
 export AWS_SHARED_CREDENTIALS_FILE="${AWS_SHARED_CREDENTIALS_FILE:-$XDG_CONFIG_HOME/aws/credentials}"
 export DOCKER_CONFIG="${DOCKER_CONFIG:-$XDG_CONFIG_HOME/docker}"
@@ -20,6 +16,7 @@ export NODE_REPL_HISTORY="$XDG_DATA_HOME/node_history"
 export DOTNET_CLI_HOME="$XDG_DATA_HOME/dotnet"
 export GOPATH="$HOME/Dev/go"
 export CARGO_HOME="$XDG_DATA_HOME/cargo"
+export BUN_INSTALL="${BUN_INSTALL:-$HOME/.bun}"
 
 case "$(uname -s 2>/dev/null || printf unknown)" in
   Darwin)
@@ -50,7 +47,9 @@ fi
 path_prepend "$GOPATH/bin"
 path_prepend "$PNPM_HOME"
 path_prepend "$CARGO_HOME/bin"
-path_prepend "$HOME/.volta/bin"
+path_prepend "$BUN_INSTALL/bin"
+path_prepend "$HOME/.lmstudio/bin"
+path_prepend "$HOME/.local/share/mise/shims"
 path_prepend "/usr/local/sbin"
 path_prepend "/usr/local/bin"
 path_prepend "/opt/homebrew/sbin"

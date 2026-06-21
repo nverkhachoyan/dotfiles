@@ -10,7 +10,7 @@ backup_path() {
 
   [ -e "$path" ] || [ -L "$path" ] || return
 
-  backup_dest="$backup_root/${path#$HOME/}"
+  backup_dest="$backup_root/${path#"$HOME"/}"
   mkdir -p "$(dirname "$backup_dest")"
   mv "$path" "$backup_dest"
 }

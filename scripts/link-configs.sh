@@ -11,6 +11,11 @@ link_path() {
   local current
   local backup_dest
 
+  if [ ! -e "$src" ] && [ ! -L "$src" ]; then
+    printf 'Missing source: %s\n' "$src" >&2
+    return 1
+  fi
+
   mkdir -p "$(dirname "$dest")"
 
   if [ -L "$dest" ]; then
@@ -21,7 +26,7 @@ link_path() {
   fi
 
   if [ -e "$dest" ] || [ -L "$dest" ]; then
-    backup_dest="$backup_root/${dest#$HOME/}"
+    backup_dest="$backup_root/${dest#"$HOME"/}"
     mkdir -p "$(dirname "$backup_dest")"
     mv "$dest" "$backup_dest"
   fi
@@ -36,16 +41,16 @@ mkdir -p "$HOME/Dev/go/bin"
 mkdir -p "$HOME/Documents/Media/Screenshots"
 
 link_path "$repo_root/config/alacritty/alacritty.toml" "$HOME/.config/alacritty/alacritty.toml"
+link_path "$repo_root/config/alacritty/color.toml" "$HOME/.config/alacritty/color.toml"
+link_path "$repo_root/config/alacritty/alacritty-theme-switcher.sh" "$HOME/.config/alacritty/alacritty-theme-switcher.sh"
+link_path "$repo_root/config/alacritty/theme-watcher.swift" "$HOME/.config/alacritty/theme-watcher.swift"
 link_path "$repo_root/config/bash/bashrc" "$HOME/.config/bash/bashrc"
 link_path "$repo_root/config/direnv/direnv.toml" "$HOME/.config/direnv/direnv.toml"
 link_path "$repo_root/config/gh/config.yml" "$HOME/.config/gh/config.yml"
 link_path "$repo_root/config/ghostty/config" "$HOME/.config/ghostty/config"
 link_path "$repo_root/config/git/config" "$HOME/.config/git/config"
 link_path "$repo_root/config/lazydocker/config.yml" "$HOME/.config/lazydocker/config.yml"
-link_path "$repo_root/config/lazygit/config.yml" "$HOME/.config/lazygit/config.yml"
-link_path "$repo_root/config/npm/npmrc" "$HOME/.config/npm/npmrc"
 link_path "$repo_root/config/nvim" "$HOME/.config/nvim"
-link_path "$repo_root/config/sesh/sesh.toml" "$HOME/.config/sesh/sesh.toml"
 link_path "$repo_root/config/shell/aliases.sh" "$HOME/.config/shell/aliases.sh"
 link_path "$repo_root/config/shell/env.sh" "$HOME/.config/shell/env.sh"
 link_path "$repo_root/config/ssh/config" "$HOME/.config/ssh/config"
@@ -59,7 +64,6 @@ link_path "$repo_root/home-shims/.bashrc" "$HOME/.bashrc"
 link_path "$repo_root/home-shims/.profile" "$HOME/.profile"
 link_path "$repo_root/home-shims/.zshenv" "$HOME/.zshenv"
 link_path "$repo_root/config/git/config" "$HOME/.gitconfig"
-link_path "$repo_root/config/npm/npmrc" "$HOME/.npmrc"
 link_path "$repo_root/config/ssh/config" "$HOME/.ssh/config"
 
 if [ -L "$HOME/.npm-global" ] && [ "$(readlink "$HOME/.npm-global")" = "$HOME/.local/share/npm-global" ]; then

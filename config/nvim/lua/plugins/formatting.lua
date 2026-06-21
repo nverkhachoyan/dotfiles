@@ -14,7 +14,6 @@ return {
 					typescript = { "prettier" },
 					rust = { "rustfmt" },
 					go = { "gofmt" },
-					nix = { "nixfmt" },
 					c = { "clang-format" },
 					cpp = { "clang-format" },
 					["_"] = { "trim_whitespace" },

@@ -1,0 +1,5 @@
+.DS_Store
+*.log
+
+.config-backups/
+.local/state/config-migration-backups/

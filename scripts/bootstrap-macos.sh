@@ -18,9 +18,9 @@ case "$(uname -s)" in
     ;;
 esac
 
-export PATH="$HOME/.local/bin:$HOME/.volta/bin:$CARGO_HOME/bin:$PNPM_HOME:$GOPATH/bin:/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$CARGO_HOME/bin:$PNPM_HOME:$GOPATH/bin:/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
 
-mkdir -p "$HOME/.local/bin" "$CARGO_HOME/bin" "$GOPATH/bin" "$PNPM_HOME"
+mkdir -p "$HOME/.local/bin" "$HOME/.local/share/mise/shims" "$CARGO_HOME/bin" "$GOPATH/bin" "$PNPM_HOME"
 
 "$repo_root/scripts/link-configs.sh"
 "$repo_root/scripts/relocate-home-configs.sh"
@@ -32,12 +32,9 @@ fi
 eval "$(/opt/homebrew/bin/brew shellenv)"
 brew bundle --file "$repo_root/Brewfile"
 
-if ! command -v volta >/dev/null 2>&1; then
-  curl -fsSL https://get.volta.sh | bash -s -- --skip-setup
-fi
-
-export PATH="$HOME/.volta/bin:$PATH"
-volta install node@24 pnpm prettier typescript-language-server
+mise use -g --pin node@24.14.0
+mise exec node@24.14.0 -- npm install -g @biomejs/biome@2.4.14 @mariozechner/pi-coding-agent@0.66.1 @zed-industries/codex-acp@0.16.0 pnpm@10.32.1 prettier@3.8.1 typescript@6.0.3 typescript-language-server@5.1.3
+mise reshim
 
 curl -LsSf https://astral.sh/uv/install.sh | env UV_UNMANAGED_INSTALL="$HOME/.local/bin" sh
 
@@ -50,8 +47,7 @@ fi
 
 export PATH="$CARGO_HOME/bin:$PATH"
 rustup component add rustfmt rust-analyzer
-cargo install --locked --force deadnix statix stylua
-cargo install --locked --force --git https://github.com/oxalica/nil nil
+cargo install --locked --force stylua
 
 go install golang.org/x/tools/gopls@latest
 

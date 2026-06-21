@@ -1,0 +1,42 @@
+# Active theme: Codex Noir
+[colors.primary]
+background = "#080a0d"
+foreground = "#d7dce2"
+
+[colors.cursor]
+text = "#080a0d"
+cursor = "#7dd3fc"
+
+[colors.selection]
+text = "#d7dce2"
+background = "#243244"
+
+[colors.normal]
+black = "#11151c"
+red = "#e06c75"
+green = "#98c379"
+yellow = "#d19a66"
+blue = "#61afef"
+magenta = "#c678dd"
+cyan = "#56b6c2"
+white = "#d7dce2"
+
+[colors.bright]
+black = "#5c6370"
+red = "#ff7b86"
+green = "#b6d989"
+yellow = "#e5b07d"
+blue = "#7cc7ff"
+magenta = "#d896f0"
+cyan = "#76d4df"
+white = "#f2f5f8"
+
+[colors.dim]
+black = "#080a0d"
+red = "#9d535a"
+green = "#6f8f5a"
+yellow = "#9b744e"
+blue = "#4f82af"
+magenta = "#8b5aa1"
+cyan = "#487f87"
+white = "#8d96a3"

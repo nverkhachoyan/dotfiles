@@ -1,3 +1,5 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
 add_newline = false
 
 format = """
@@ -16,7 +18,7 @@ fish_style_pwd_dir_length = 1
 [character]
 success_symbol = "[❯](bold green)"
 error_symbol = "[❯](bold red)"
-vicmd_symbol = "[❮](bold yellow)"
+vimcmd_symbol = "[❮](bold yellow)"
 
 [git_branch]
 symbol = "󰊢 "
@@ -31,20 +33,24 @@ ahead = "⇡"
 behind = "⇣"
 diverged = "⇕"
 untracked = "?"
-stashed = "$"
+stashed = "\\$"
 modified = "~"
 staged = "+"
 renamed = "»"
 deleted = "✘"
 
 [package]
-disabled = true
+format = 'is [$symbol$version]($style) '
+
+version_format = 'v${major}.${minor}'
 
 [nodejs]
-disabled = true
+version_format = '${major}.${minor}'
 
 [python]
-disabled = true
+format = 'via [🐍 $version]($style) '
+version_format = 'v${major}.${minor}'
+disabled = false
 
 [lua]
 disabled = true
@@ -60,6 +66,8 @@ disabled = true
 
 [kubernetes]
 disabled = true
+
+# Misc
 
 [cmd_duration]
 disabled = true
