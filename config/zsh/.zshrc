@@ -81,3 +81,4 @@ export PATH="$HOME/.opencode/bin:$PATH"
 if command -v mise >/dev/null 2>&1; then
   eval "$(mise activate zsh)"
 fi
+export PATH="$HOME/.config/emacs/bin:$PATH"
