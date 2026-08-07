@@ -56,7 +56,12 @@ link_path "$repo_root/config/shell/env.sh" "$HOME/.config/shell/env.sh"
 link_path "$repo_root/config/shell/env.d" "$HOME/.config/shell/env.d"
 link_path "$repo_root/config/ssh/config" "$HOME/.config/ssh/config"
 link_path "$repo_root/config/starship.toml" "$HOME/.config/starship.toml"
+
+link_path "$repo_root/config/tmux/keybindings.conf" "$HOME/.config/tmux/keybindings.conf"
+link_path "$repo_root/config/tmux/options.conf" "$HOME/.config/tmux/options.conf"
+link_path "$repo_root/config/tmux/theme.conf" "$HOME/.config/tmux/theme.conf"
 link_path "$repo_root/config/tmux/tmux.conf" "$HOME/.config/tmux/tmux.conf"
+
 link_path "$repo_root/config/zsh/.zprofile" "$HOME/.config/zsh/.zprofile"
 link_path "$repo_root/config/zsh/.zshrc" "$HOME/.config/zsh/.zshrc"
 
