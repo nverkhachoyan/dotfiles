@@ -31,3 +31,18 @@ Relocate supported home-root config dirs into `~/.config` with:
 ```sh
 ./scripts/relocate-home-configs.sh
 ```
+
+Run the local validation suite with:
+
+```sh
+./scripts/check
+```
+
+The committed Alacritty `color.toml` is a default template. The linker copies
+it into `~/.config/alacritty/color.toml`, where macOS theme switching can update
+it without changing the repository. Theme switching is intentionally disabled
+on Linux.
+
+The macOS bootstrap pins language-tool versions by default. Override
+`GOPLS_VERSION`, `PYLINT_VERSION`, `RUST_TOOLCHAIN`, or `STYLUA_VERSION` when
+intentionally updating them.

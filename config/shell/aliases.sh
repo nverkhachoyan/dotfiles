@@ -1,3 +1,5 @@
+# shellcheck shell=bash
+
 alias nv='nvim'
 alias gst='git status'
 alias gcm='git commit -m'
@@ -6,7 +8,9 @@ alias gaa='git add --all'
 alias gfp='git fetch && git pull'
 alias dc='docker compose'
 alias dps='docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Status}}\t{{.Ports}}"'
-alias aws='op plugin run -- aws'
+if command -v op >/dev/null 2>&1; then
+  alias aws='op plugin run -- aws'
+fi
 alias dev='cd ~/Dev/'
 alias ..='cd ..'
 alias ...='cd ../..'

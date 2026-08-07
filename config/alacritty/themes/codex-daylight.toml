@@ -1,0 +1,42 @@
+# Active theme: Codex Daylight
+[colors.primary]
+background = "#fbf7ef"
+foreground = "#2f3437"
+
+[colors.cursor]
+text = "#fbf7ef"
+cursor = "#0f7490"
+
+[colors.selection]
+text = "#2f3437"
+background = "#d9e6ec"
+
+[colors.normal]
+black = "#273136"
+red = "#b84b4b"
+green = "#4f7d48"
+yellow = "#9a6a1f"
+blue = "#2d6ea3"
+magenta = "#8f5f9f"
+cyan = "#2d7f86"
+white = "#e8dfcf"
+
+[colors.bright]
+black = "#5f6a70"
+red = "#cc6060"
+green = "#64995b"
+yellow = "#b77d2b"
+blue = "#3b82bd"
+magenta = "#a46fb4"
+cyan = "#3b969f"
+white = "#fffaf0"
+
+[colors.dim]
+black = "#1f272b"
+red = "#8a4141"
+green = "#3f663a"
+yellow = "#7a551c"
+blue = "#28577f"
+magenta = "#704a7d"
+cyan = "#28666c"
+white = "#9a9388"

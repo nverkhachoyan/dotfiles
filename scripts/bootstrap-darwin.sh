@@ -15,40 +15,72 @@ export CARGO_HOME="${CARGO_HOME:-$XDG_DATA_HOME/cargo}"
 export GOPATH="${GOPATH:-$HOME/Dev/go}"
 export PNPM_HOME="${PNPM_HOME:-$HOME/Library/pnpm}"
 
-export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$CARGO_HOME/bin:$PNPM_HOME:$GOPATH/bin:/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$CARGO_HOME/bin:$PNPM_HOME:$GOPATH/bin:$PATH"
 
 mkdir -p "$HOME/.local/bin" "$HOME/.local/share/mise/shims" "$CARGO_HOME/bin" "$GOPATH/bin" "$PNPM_HOME"
+
+installer_dir="$(mktemp -d)"
+trap 'rm -rf "$installer_dir"' EXIT
 
 "$repo_root/scripts/link-configs.sh"
 "$repo_root/scripts/relocate-home-configs.sh"
 
-if ! command -v brew >/dev/null 2>&1; then
-  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+brew_bin="$(type -P brew || true)"
+if [ -z "$brew_bin" ]; then
+  for candidate in /opt/homebrew/bin/brew /usr/local/bin/brew; do
+    if [ -x "$candidate" ]; then
+      brew_bin="$candidate"
+      break
+    fi
+  done
 fi
 
-eval "$(/opt/homebrew/bin/brew shellenv)"
+if [ -z "$brew_bin" ]; then
+  curl --fail --location --proto '=https' --tlsv1.2 \
+    https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh \
+    --output "$installer_dir/homebrew-install.sh"
+  NONINTERACTIVE=1 /bin/bash "$installer_dir/homebrew-install.sh"
+  brew_bin="$(type -P brew || true)"
+  if [ -z "$brew_bin" ]; then
+    for candidate in /opt/homebrew/bin/brew /usr/local/bin/brew; do
+      if [ -x "$candidate" ]; then
+        brew_bin="$candidate"
+        break
+      fi
+    done
+  fi
+fi
+
+if [ -z "$brew_bin" ]; then
+  printf 'Homebrew installation completed, but brew was not found.\n' >&2
+  exit 1
+fi
+
+eval "$($brew_bin shellenv)"
 brew bundle --file "$repo_root/profiles/darwin/Brewfile"
 
 mise use -g --pin node@24.14.0
 mise exec node@24.14.0 -- npm install -g @biomejs/biome@2.4.14 @mariozechner/pi-coding-agent@0.66.1 @zed-industries/codex-acp@0.16.0 pnpm@10.32.1 prettier@3.8.1 typescript@6.0.3 typescript-language-server@5.1.3
 mise reshim
 
-curl -LsSf https://astral.sh/uv/install.sh | env UV_UNMANAGED_INSTALL="$HOME/.local/bin" sh
-
 if ! command -v rustup >/dev/null 2>&1; then
-  curl https://sh.rustup.rs -sSf | env RUSTUP_INIT_SKIP_PATH_CHECK=yes sh -s -- -y --no-modify-path
-else
-  rustup self update
-  rustup update
+  curl --fail --location --proto '=https' --tlsv1.2 \
+    https://sh.rustup.rs --output "$installer_dir/rustup-install.sh"
+  env RUSTUP_INIT_SKIP_PATH_CHECK=yes sh "$installer_dir/rustup-install.sh" -y --no-modify-path
 fi
 
 export PATH="$CARGO_HOME/bin:$PATH"
-rustup component add rustfmt rust-analyzer
-cargo install --locked --force stylua
+RUST_TOOLCHAIN="${RUST_TOOLCHAIN:-1.94.0}"
+STYLUA_VERSION="${STYLUA_VERSION:-2.4.0}"
+rustup toolchain install "$RUST_TOOLCHAIN" --profile minimal
+rustup component add --toolchain "$RUST_TOOLCHAIN" rustfmt rust-analyzer
+cargo +"$RUST_TOOLCHAIN" install stylua --version "$STYLUA_VERSION" --locked --force
 
-go install golang.org/x/tools/gopls@latest
+GOPLS_VERSION="${GOPLS_VERSION:-v0.21.1}"
+go install "golang.org/x/tools/gopls@$GOPLS_VERSION"
 
 export PATH="$HOME/.local/bin:$PNPM_HOME:$PATH"
-uv tool install --upgrade pylint
+PYLINT_VERSION="${PYLINT_VERSION:-4.0.5}"
+uv tool install --upgrade "pylint==$PYLINT_VERSION"
 
 printf 'macOS bootstrap complete.\n'

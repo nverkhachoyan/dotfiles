@@ -34,6 +34,31 @@ link_path() {
   ln -s "$src" "$dest"
 }
 
+copy_if_missing() {
+  local src="$1"
+  local dest="$2"
+  local backup_dest
+
+  if [ ! -e "$src" ] && [ ! -L "$src" ]; then
+    printf 'Missing source: %s\n' "$src" >&2
+    return 1
+  fi
+
+  mkdir -p "$(dirname "$dest")"
+
+  # Older installs linked color.toml into the repository. Replace that link
+  # with a runtime copy so theme switching cannot modify tracked files.
+  if [ -L "$dest" ] && [ "$(readlink "$dest")" = "$src" ]; then
+    backup_dest="$backup_root/${dest#"$HOME"/}"
+    mkdir -p "$(dirname "$backup_dest")"
+    mv "$dest" "$backup_dest"
+  fi
+
+  if [ ! -e "$dest" ] && [ ! -L "$dest" ]; then
+    cp "$src" "$dest"
+  fi
+}
+
 mkdir -p "$HOME/.config"
 mkdir -p "$HOME/.local/share/dotnet"
 mkdir -p "$HOME/.local/share/cargo"
@@ -41,9 +66,10 @@ mkdir -p "$HOME/Dev/go/bin"
 mkdir -p "$HOME/Documents/Media/Screenshots"
 
 link_path "$repo_root/config/alacritty/alacritty.toml" "$HOME/.config/alacritty/alacritty.toml"
-link_path "$repo_root/config/alacritty/color.toml" "$HOME/.config/alacritty/color.toml"
+copy_if_missing "$repo_root/config/alacritty/color.toml" "$HOME/.config/alacritty/color.toml"
 link_path "$repo_root/config/alacritty/alacritty-theme-switcher.sh" "$HOME/.config/alacritty/alacritty-theme-switcher.sh"
 link_path "$repo_root/config/alacritty/theme-watcher.swift" "$HOME/.config/alacritty/theme-watcher.swift"
+link_path "$repo_root/config/alacritty/themes" "$HOME/.config/alacritty/themes"
 link_path "$repo_root/config/bash/bashrc" "$HOME/.config/bash/bashrc"
 link_path "$repo_root/config/direnv/direnv.toml" "$HOME/.config/direnv/direnv.toml"
 link_path "$repo_root/config/gh/config.yml" "$HOME/.config/gh/config.yml"

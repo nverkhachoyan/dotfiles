@@ -1,8 +1,15 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-DARK_MODE=$(defaults read -g AppleInterfaceStyle 2>/dev/null)
-COLOR_FILE="$HOME/.config/alacritty/color.toml"
-ALACRITTY_CONFIG="$HOME/.config/alacritty/alacritty.toml"
+set -euo pipefail
+
+if [ "$(uname -s 2>/dev/null || printf unknown)" != Darwin ] || ! command -v defaults >/dev/null 2>&1; then
+    exit 0
+fi
+
+DARK_MODE="$(defaults read -g AppleInterfaceStyle 2>/dev/null || true)"
+COLOR_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/alacritty/color.toml"
+ALACRITTY_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/alacritty/alacritty.toml"
+THEME_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/alacritty/themes"
 
 tmux_set() {
     tmux set-option -g "$1" "$2" 2>/dev/null || true
@@ -41,97 +48,11 @@ apply_tmux_light() {
 }
 
 if [ "$DARK_MODE" = "Dark" ]; then
-    cat > "$COLOR_FILE" << 'EOF'
-# Active theme: Codex Noir
-[colors.primary]
-background = "#080a0d"
-foreground = "#d7dce2"
-
-[colors.cursor]
-text = "#080a0d"
-cursor = "#7dd3fc"
-
-[colors.selection]
-text = "#d7dce2"
-background = "#243244"
-
-[colors.normal]
-black = "#11151c"
-red = "#e06c75"
-green = "#98c379"
-yellow = "#d19a66"
-blue = "#61afef"
-magenta = "#c678dd"
-cyan = "#56b6c2"
-white = "#d7dce2"
-
-[colors.bright]
-black = "#5c6370"
-red = "#ff7b86"
-green = "#b6d989"
-yellow = "#e5b07d"
-blue = "#7cc7ff"
-magenta = "#d896f0"
-cyan = "#76d4df"
-white = "#f2f5f8"
-
-[colors.dim]
-black = "#080a0d"
-red = "#9d535a"
-green = "#6f8f5a"
-yellow = "#9b744e"
-blue = "#4f82af"
-magenta = "#8b5aa1"
-cyan = "#487f87"
-white = "#8d96a3"
-EOF
+    cp "$THEME_DIR/codex-noir.toml" "$COLOR_FILE"
     echo "Switched to Codex Noir"
     apply_tmux_dark
 else
-    cat > "$COLOR_FILE" << 'EOF'
-# Active theme: Codex Daylight
-[colors.primary]
-background = "#fbf7ef"
-foreground = "#2f3437"
-
-[colors.cursor]
-text = "#fbf7ef"
-cursor = "#0f7490"
-
-[colors.selection]
-text = "#2f3437"
-background = "#d9e6ec"
-
-[colors.normal]
-black = "#273136"
-red = "#b84b4b"
-green = "#4f7d48"
-yellow = "#9a6a1f"
-blue = "#2d6ea3"
-magenta = "#8f5f9f"
-cyan = "#2d7f86"
-white = "#e8dfcf"
-
-[colors.bright]
-black = "#5f6a70"
-red = "#cc6060"
-green = "#64995b"
-yellow = "#b77d2b"
-blue = "#3b82bd"
-magenta = "#a46fb4"
-cyan = "#3b969f"
-white = "#fffaf0"
-
-[colors.dim]
-black = "#1f272b"
-red = "#8a4141"
-green = "#3f663a"
-yellow = "#7a551c"
-blue = "#28577f"
-magenta = "#704a7d"
-cyan = "#28666c"
-white = "#9a9388"
-EOF
+    cp "$THEME_DIR/codex-daylight.toml" "$COLOR_FILE"
     echo "Switched to Codex Daylight"
     apply_tmux_light
 fi

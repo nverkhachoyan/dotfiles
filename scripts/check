@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+check_home="$(mktemp -d)"
+tmux_socket="dotfiles-check-$$"
+
+cleanup() {
+  tmux -L "$tmux_socket" kill-server 2>/dev/null || true
+  rm -rf "$check_home"
+}
+trap cleanup EXIT
+
+require_command() {
+  if ! command -v "$1" >/dev/null 2>&1; then
+    printf 'Missing required check command: %s\n' "$1" >&2
+    exit 1
+  fi
+}
+
+require_command bash
+require_command zsh
+require_command shellcheck
+require_command tmux
+
+printf '%s\n' 'Checking shell syntax...'
+bash -n "$repo_root"/scripts/*.sh "$repo_root"/scripts/lib/*.sh \
+  "$repo_root"/shims/.bash_profile "$repo_root"/shims/.bashrc \
+  "$repo_root"/shims/.profile "$repo_root"/shims/.zshenv \
+  "$repo_root"/config/bash/bashrc
+zsh -n "$repo_root"/config/zsh/.zprofile "$repo_root"/config/zsh/.zshrc \
+  "$repo_root"/shims/.zshenv
+shellcheck -x "$repo_root"/scripts/*.sh "$repo_root"/scripts/lib/*.sh \
+  "$repo_root"/config/shell/*.sh "$repo_root"/config/shell/env.d/*.sh \
+  "$repo_root"/config/alacritty/*.sh
+
+printf '%s\n' 'Checking tmux configuration...'
+HOME="$check_home" tmux -f "$repo_root/config/tmux/tmux.conf" -L "$tmux_socket" start-server
+
+printf '%s\n' 'Checking isolated config linking...'
+HOME="$check_home" XDG_CONFIG_HOME="$check_home/.config" \
+  "$repo_root/scripts/link-configs.sh" >/dev/null
+
+test -L "$check_home/.config/nvim"
+test -L "$check_home/.gitconfig"
+test -f "$check_home/.config/alacritty/color.toml"
+test -L "$check_home/.config/alacritty/themes"
+
+printf '%s\n' 'All checks passed.'
