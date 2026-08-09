@@ -15,20 +15,21 @@ tmux_set() {
     tmux set-option -g "$1" "$2" 2>/dev/null || true
 }
 
+# Keep tmux's dark appearance aligned with config/ghostty/theme.conf.
 apply_tmux_dark() {
-    tmux_set status-style "bg=#080a0d,fg=#8d96a3"
-    tmux_set status-left "#[fg=#7dd3fc,bold] #S #[fg=#2a3441]│"
-    tmux_set status-right "#[fg=#2a3441]│ #[fg=#8d96a3]%H:%M "
-    tmux_set window-status-format "#[fg=#5c6370] #I:#W "
-    tmux_set window-status-current-format "#[fg=#080a0d,bg=#7dd3fc,bold] #I:#W "
-    tmux_set window-status-activity-style "fg=#e5b07d"
-    tmux_set pane-border-style "fg=#1d2633"
-    tmux_set pane-active-border-style "fg=#56b6c2"
-    tmux_set display-panes-colour "#5c6370"
-    tmux_set display-panes-active-colour "#7dd3fc"
-    tmux_set message-style "bg=#11151c,fg=#d7dce2"
-    tmux_set message-command-style "bg=#11151c,fg=#7dd3fc"
-    tmux_set mode-style "bg=#243244,fg=#f2f5f8"
+    tmux_set status-style "bg=default,fg=#f5f5f7"
+    tmux_set status-left "#[fg=#0a84ff,bold] #S #[fg=#636366]│"
+    tmux_set status-right "#[fg=#636366]│ #[fg=#8e8e93]%H:%M "
+    tmux_set window-status-format "#[fg=#636366] #I:#W "
+    tmux_set window-status-current-format "#[fg=#1e1e1e,bg=#0a84ff,bold] #I:#W "
+    tmux_set window-status-activity-style "fg=#ffd60a"
+    tmux_set pane-border-style "fg=#3a3a3c"
+    tmux_set pane-active-border-style "fg=#64d2ff"
+    tmux_set display-panes-colour "#636366"
+    tmux_set display-panes-active-colour "#007aff"
+    tmux_set message-style "bg=#2c2c2e,fg=#f5f5f7"
+    tmux_set message-command-style "bg=#2c2c2e,fg=#64d2ff"
+    tmux_set mode-style "bg=#0058d0,fg=#ffffff"
 }
 
 apply_tmux_light() {
