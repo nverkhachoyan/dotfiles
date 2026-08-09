@@ -1,6 +1,5 @@
 [general]
-# Keep a complete static theme in the repository. macOS appearance changes
-# are applied at runtime by alacritty-theme-switcher.sh.
+# Static theme. Change this import manually when selecting another theme.
 import = [
     "~/.config/alacritty/themes/codex-noir.toml"
 ]

@@ -41,10 +41,8 @@ Run the local validation suite with:
 ./scripts/check
 ```
 
-Alacritty imports the committed Codex Noir theme by default. On macOS,
-theme switching applies the selected committed theme through Alacritty's IPC,
-so it does not modify or generate configuration files. Theme switching is
-intentionally disabled on Linux.
+Alacritty uses the committed Codex Noir theme by default. Select another
+committed theme by changing the import in `config/alacritty/alacritty.toml`.
 
 The macOS bootstrap pins language-tool versions by default. Override
 `GOPLS_VERSION`, `PYLINT_VERSION`, `RUST_TOOLCHAIN`, or `STYLUA_VERSION` when
