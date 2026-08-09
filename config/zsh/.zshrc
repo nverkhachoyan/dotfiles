@@ -82,3 +82,11 @@ if command -v mise >/dev/null 2>&1; then
   eval "$(mise activate zsh)"
 fi
 export PATH="$HOME/.config/emacs/bin:$PATH"
+
+# pnpm
+export PNPM_HOME="/Users/nverk/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME/bin:"*) ;;
+  *) export PATH="$PNPM_HOME/bin:$PATH" ;;
+esac
+# pnpm end
