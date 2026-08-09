@@ -1,7 +1,7 @@
 [ -f "$HOME/.config/shell/env.sh" ] && source "$HOME/.config/shell/env.sh"
 [ -f "$HOME/.config/shell/aliases.sh" ] && source "$HOME/.config/shell/aliases.sh"
 
-HISTFILE="$ZDOTDIR/.zsh_history"
+HISTFILE="${XDG_STATE_HOME:-$HOME/.local/state}/zsh/history"
 HISTSIZE=50000
 SAVEHIST=50000
 

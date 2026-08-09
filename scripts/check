@@ -22,16 +22,15 @@ require_command() {
 require_command bash
 require_command zsh
 require_command shellcheck
+require_command stow
 require_command tmux
 
 printf '%s\n' 'Checking shell syntax...'
 bash -n "$repo_root"/scripts/*.sh "$repo_root"/scripts/lib/*.sh \
-  "$repo_root"/shims/.bash_profile "$repo_root"/shims/.bashrc \
-  "$repo_root"/shims/.profile "$repo_root"/shims/.zshenv \
-  "$repo_root"/config/bash/bashrc
-zsh -n "$repo_root"/config/zsh/.zprofile "$repo_root"/config/zsh/.zshrc \
-  "$repo_root"/shims/.zshenv
+  "$repo_root"/home/.bashrc "$repo_root"/home/.profile
+zsh -n "$repo_root"/home/.zprofile "$repo_root"/home/.zshrc
 shellcheck -x "$repo_root"/scripts/*.sh "$repo_root"/scripts/lib/*.sh \
+  "$repo_root"/home/.bashrc "$repo_root"/home/.profile \
   "$repo_root"/config/shell/*.sh "$repo_root"/config/shell/env.d/*.sh \
   "$repo_root"/config/alacritty/*.sh
 
@@ -43,8 +42,18 @@ HOME="$check_home" XDG_CONFIG_HOME="$check_home/.config" \
   "$repo_root/scripts/link-configs.sh" >/dev/null
 
 test -L "$check_home/.config/nvim"
+test ! -e "$check_home/.config/zsh"
+test -L "$check_home/.bashrc"
+test -L "$check_home/.profile"
+test -L "$check_home/.zshrc"
+test -L "$check_home/.zprofile"
 test -L "$check_home/.gitconfig"
-test -f "$check_home/.config/alacritty/color.toml"
-test -L "$check_home/.config/alacritty/themes"
+test -L "$check_home/.ssh/config"
+test ! -e "$check_home/.bash_profile"
+test ! -e "$check_home/.zshenv"
+test -L "$check_home/.config/alacritty"
+test -f "$check_home/.config/alacritty/alacritty.toml"
+test -f "$check_home/.config/alacritty/themes/codex-noir.toml"
+test ! -e "$check_home/.config/alacritty/color.toml"
 
 printf '%s\n' 'All checks passed.'

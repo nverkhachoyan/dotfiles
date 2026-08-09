@@ -1,11 +1,14 @@
 # Dotfiles
 
-Personal user-space configuration lives in `config/` and can be linked into
-`~/.config` with:
+Personal user-space configuration lives in `config/`, with home-level shell
+startup files in `home/`. GNU Stow links them into `~/.config` and `$HOME`:
 
 ```sh
 ./scripts/link-configs.sh
 ```
+
+GNU Stow is required. On macOS it is installed by the Brewfile; on Linux,
+install the `stow` package from your distribution.
 
 Shared config is the default. OS-specific setup lives in:
 
@@ -38,10 +41,10 @@ Run the local validation suite with:
 ./scripts/check
 ```
 
-The committed Alacritty `color.toml` is a default template. The linker copies
-it into `~/.config/alacritty/color.toml`, where macOS theme switching can update
-it without changing the repository. Theme switching is intentionally disabled
-on Linux.
+Alacritty imports the committed Codex Noir theme by default. On macOS,
+theme switching applies the selected committed theme through Alacritty's IPC,
+so it does not modify or generate configuration files. Theme switching is
+intentionally disabled on Linux.
 
 The macOS bootstrap pins language-tool versions by default. Override
 `GOPLS_VERSION`, `PYLINT_VERSION`, `RUST_TOOLCHAIN`, or `STYLUA_VERSION` when

@@ -22,9 +22,6 @@ mkdir -p "$HOME/.local/bin" "$HOME/.local/share/mise/shims" "$CARGO_HOME/bin" "$
 installer_dir="$(mktemp -d)"
 trap 'rm -rf "$installer_dir"' EXIT
 
-"$repo_root/scripts/link-configs.sh"
-"$repo_root/scripts/relocate-home-configs.sh"
-
 brew_bin="$(type -P brew || true)"
 if [ -z "$brew_bin" ]; then
   for candidate in /opt/homebrew/bin/brew /usr/local/bin/brew; do
@@ -58,6 +55,10 @@ fi
 
 eval "$($brew_bin shellenv)"
 brew bundle --file "$repo_root/profiles/darwin/Brewfile"
+
+# Stow is installed by the Brewfile above.
+"$repo_root/scripts/link-configs.sh"
+"$repo_root/scripts/relocate-home-configs.sh"
 
 mise use -g --pin node@24.14.0
 mise exec node@24.14.0 -- npm install -g @biomejs/biome@2.4.14 @mariozechner/pi-coding-agent@0.66.1 @zed-industries/codex-acp@0.16.0 pnpm@10.32.1 prettier@3.8.1 typescript@6.0.3 typescript-language-server@5.1.3

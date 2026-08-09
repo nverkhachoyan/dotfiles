@@ -1,9 +1,13 @@
+# shellcheck shell=bash
+
 [[ $- == *i* ]] || return
 
+# shellcheck source=/dev/null
 [ -f "$HOME/.config/shell/env.sh" ] && . "$HOME/.config/shell/env.sh"
+# shellcheck source=/dev/null
 [ -f "$HOME/.config/shell/aliases.sh" ] && . "$HOME/.config/shell/aliases.sh"
 
-HISTFILE="$HOME/.config/bash/history"
+HISTFILE="${XDG_STATE_HOME:-$HOME/.local/state}/bash/history"
 HISTFILESIZE=100000
 HISTSIZE=10000
 

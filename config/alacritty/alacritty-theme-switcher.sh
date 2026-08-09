@@ -7,9 +7,11 @@ if [ "$(uname -s 2>/dev/null || printf unknown)" != Darwin ] || ! command -v def
 fi
 
 DARK_MODE="$(defaults read -g AppleInterfaceStyle 2>/dev/null || true)"
-COLOR_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/alacritty/color.toml"
-ALACRITTY_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/alacritty/alacritty.toml"
 THEME_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/alacritty/themes"
+ALACRITTY_BIN="$(command -v alacritty || true)"
+if [ -z "$ALACRITTY_BIN" ] && [ -x "/Applications/Alacritty.app/Contents/MacOS/alacritty" ]; then
+    ALACRITTY_BIN="/Applications/Alacritty.app/Contents/MacOS/alacritty"
+fi
 
 tmux_set() {
     tmux set-option -g "$1" "$2" 2>/dev/null || true
@@ -48,14 +50,20 @@ apply_tmux_light() {
     tmux_set mode-style "bg=#d9e6ec,fg=#2f3437"
 }
 
+apply_alacritty_theme() {
+    local theme="$1"
+
+    [ -n "$ALACRITTY_BIN" ] || return
+    "$ALACRITTY_BIN" msg config --window-id=-1 \
+        "$(cat "$THEME_DIR/$theme")" 2>/dev/null || true
+}
+
 if [ "$DARK_MODE" = "Dark" ]; then
-    cp "$THEME_DIR/codex-noir.toml" "$COLOR_FILE"
+    apply_alacritty_theme codex-noir.toml
     echo "Switched to Codex Noir"
     apply_tmux_dark
 else
-    cp "$THEME_DIR/codex-daylight.toml" "$COLOR_FILE"
+    apply_alacritty_theme codex-daylight.toml
     echo "Switched to Codex Daylight"
     apply_tmux_light
 fi
-
-touch "$ALACRITTY_CONFIG"
