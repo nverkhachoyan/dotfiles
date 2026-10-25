@@ -3,13 +3,14 @@
 
 [core]
 	pager = delta
+	excludesfile = /Users/nverk/.gitignore_global
 
 [credential "https://gist.github.com"]
-	helper = 
+	helper =
 	helper = !gh auth git-credential
 
 [credential "https://github.com"]
-	helper = 
+	helper =
 	helper = !gh auth git-credential
 
 [fetch]
@@ -40,3 +41,5 @@
 [user]
 	email = khachoyannver@gmail.com
 	name = Nver Khachoyan
+[advice]
+	statusHints = false

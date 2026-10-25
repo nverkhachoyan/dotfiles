@@ -16,11 +16,13 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias mkdir='mkdir -p'
 alias reload='exec "$SHELL" -l'
+alias t='tmux'
 
 if command -v eza >/dev/null 2>&1; then
   alias ls='eza --sort=type --icons --hyperlink --time-style relative --no-user --no-permissions'
   alias ll='eza -lah --sort=type --icons --hyperlink --time-style relative'
   alias la='ls -A'
+  alias l='ls'
 fi
 
 if command -v bat >/dev/null 2>&1; then
