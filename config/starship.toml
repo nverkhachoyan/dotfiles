@@ -3,11 +3,17 @@
 add_newline = false
 
 format = """
+$hostname\
 $directory\
 $git_branch\
 $git_status\
 $character
 """
+
+[hostname]
+ssh_only = false
+format = "[$hostname]($style) in "
+style = "bold green"
 
 [directory]
 style = "bold blue"
