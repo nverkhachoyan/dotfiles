@@ -16,6 +16,11 @@ shopt -s extglob
 shopt -s globstar
 shopt -s checkjobs
 
+# starship replaces PROMPT_COMMAND, so the hooks below must be added after it.
+if command -v starship >/dev/null 2>&1; then
+  eval "$(starship init bash)"
+fi
+
 if [[ -n "${GHOSTTY_RESOURCES_DIR:-}" ]]; then
   builtin source "${GHOSTTY_RESOURCES_DIR}/shell-integration/bash/ghostty.bash"
 fi
@@ -31,10 +36,6 @@ fi
 if command -v zoxide >/dev/null 2>&1; then
   eval "$(zoxide init bash)"
   alias cd='z'
-fi
-
-if command -v starship >/dev/null 2>&1; then
-  eval "$(starship init bash)"
 fi
 
 bind '"\e[A": history-search-backward'
