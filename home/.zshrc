@@ -84,9 +84,9 @@ fi
 export PATH="$HOME/.config/emacs/bin:$PATH"
 
 # pnpm
-export PNPM_HOME="/Users/nverk/Library/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME/bin:"*) ;;
-  *) export PATH="$PNPM_HOME/bin:$PATH" ;;
-esac
-# pnpm end
+if [ -n "${PNPM_HOME:-}" ]; then
+  case ":$PATH:" in
+    *":$PNPM_HOME/bin:"*) ;;
+    *) export PATH="$PNPM_HOME/bin:$PATH" ;;
+  esac
+fi

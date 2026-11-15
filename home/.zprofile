@@ -7,5 +7,5 @@ done
 
 source ~/.orbstack/shell/init.zsh 2>/dev/null || :
 
-# mise's shims, for login shells that never read .zshrc (ssh host zsh -lc '…')
-export PATH="$HOME/.local/share/mise/shims:$HOME/.local/bin:$PATH"
+# For login shells that never read .zshrc (ssh host zsh -lc '…').
+[ -f "$HOME/.config/shell/env.sh" ] && source "$HOME/.config/shell/env.sh"

@@ -7,8 +7,8 @@ startup files in `home/`. GNU Stow links them into `~/.config` and `$HOME`:
 ./scripts/link-configs.sh
 ```
 
-GNU Stow is required. On macOS it is installed by the Brewfile; on Linux,
-install the `stow` package from your distribution.
+GNU Stow is required. The bootstrap installs it on macOS and on Linux distros
+with a package list.
 
 Shared config is the default. OS-specific setup lives in:
 
@@ -24,10 +24,15 @@ Bootstrap the current OS with:
 ```
 
 The dispatcher runs `scripts/bootstrap-darwin.sh` on macOS and
-`scripts/bootstrap-linux.sh` on Linux. The Darwin bootstrap links configs,
-relocates supported home-root configs, and installs packages from
-`profiles/darwin/Brewfile`. The Linux bootstrap links shared configs only;
-package installation is left to the distro or Omarchy for now.
+`scripts/bootstrap-linux.sh` on Linux. Both install packages, link configs and
+then run `scripts/install-toolchains.sh`, which installs everything in
+`config/mise/config.toml` and the stable Rust toolchain.
+
+macOS packages come from `profiles/darwin/Brewfile`. On Linux they come from
+`profiles/linux/<distro>/packages.txt`, after running that profile's `setup.sh`
+if it has one. Distros without a profile only get configs linked.
+
+Files that would block a link are renamed to `<name>.bak`.
 
 Relocate supported home-root config dirs into `~/.config` with:
 
@@ -44,6 +49,5 @@ Run the local validation suite with:
 Alacritty uses the committed Codex Noir theme by default. Select another
 committed theme by changing the import in `config/alacritty/alacritty.toml`.
 
-The macOS bootstrap pins language-tool versions by default. Override
-`GOPLS_VERSION`, `PYLINT_VERSION`, `RUST_TOOLCHAIN`, or `STYLUA_VERSION` when
-intentionally updating them.
+Tool versions are pinned in `config/mise/config.toml`; run `mise outdated` to
+see updates. Set `RUST_TOOLCHAIN` to install a Rust version other than stable.

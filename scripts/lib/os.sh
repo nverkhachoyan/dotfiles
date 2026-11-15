@@ -24,3 +24,31 @@ require_os() {
     return 1
   fi
 }
+
+detect_linux_distro() {
+  local ids="" id
+
+  if [ -r /etc/os-release ]; then
+    # shellcheck source=/dev/null
+    ids="$(. /etc/os-release && printf '%s %s' "${ID:-}" "${ID_LIKE:-}")"
+  fi
+
+  for id in $ids; do
+    case "$id" in
+      fedora | rhel)
+        printf 'fedora\n'
+        return
+        ;;
+      arch)
+        printf 'arch\n'
+        return
+        ;;
+      debian | ubuntu)
+        printf 'debian\n'
+        return
+        ;;
+    esac
+  done
+
+  printf 'unknown\n'
+}

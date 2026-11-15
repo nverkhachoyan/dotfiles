@@ -9,6 +9,8 @@ source "$repo_root/scripts/lib/os.sh"
 
 require_os linux
 
+"$repo_root/scripts/install-packages-linux.sh"
 "$repo_root/scripts/link-configs.sh"
+"$repo_root/scripts/install-toolchains.sh"
 
-printf 'Linux dotfiles linked. Package installation is left to the distro or Omarchy.\n'
+printf 'Linux bootstrap complete.\n'

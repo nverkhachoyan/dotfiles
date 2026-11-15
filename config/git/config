@@ -3,7 +3,7 @@
 
 [core]
 	pager = delta
-	excludesfile = /Users/nverk/.gitignore_global
+	excludesfile = ~/.gitignore_global
 
 [credential "https://gist.github.com"]
 	helper =
