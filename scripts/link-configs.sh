@@ -60,6 +60,38 @@ backup_conflicts "$repo_root/home" "$HOME"
 "$stow_bin" --dir="$repo_root" --target="$HOME/.config" --restow config
 "$stow_bin" --dir="$repo_root" --target="$HOME" --restow home
 
+# Shell startup files are local stubs that load the shared files in
+# config/shell. Installers append to them, and that stays out of the repo.
+install_shell_stub() {
+  local target="$HOME/$1" name="$2" line resolved
+
+  # shellcheck disable=SC2016 # $HOME is expanded when the stub runs.
+  line='[ -f "$HOME/.config/shell/'"$name"'" ] && . "$HOME/.config/shell/'"$name"'"'
+
+  if [ -L "$target" ]; then
+    # Older setups linked these files into the repo.
+    resolved="$(readlink -f "$target" 2>/dev/null || true)"
+    case "$resolved" in
+      "$repo_real"/*) rm "$target" ;;
+      *) backup_file "$target" ;;
+    esac
+  elif [ -f "$target" ]; then
+    grep -qxF "$line" "$target" && return
+    backup_file "$target"
+  fi
+
+  printf '%s\n' \
+    '# Local to this machine: loads the shared config from the dotfiles repo.' \
+    '# Installers may append below. Move anything worth keeping into the repo.' \
+    "$line" >"$target"
+  printf 'Wrote shell stub %s\n' "$target"
+}
+
+install_shell_stub .profile profile
+install_shell_stub .bashrc bashrc
+install_shell_stub .zprofile zprofile
+install_shell_stub .zshrc zshrc
+
 chmod 700 "$HOME/.ssh"
 
 printf 'GNU Stow config links are in place.\n'

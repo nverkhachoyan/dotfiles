@@ -1,7 +1,7 @@
 # Dotfiles
 
-Personal user-space configuration lives in `config/`, with home-level shell
-startup files in `home/`. GNU Stow links them into `~/.config` and `$HOME`:
+Personal user-space configuration lives in `config/`, with a few home-level
+files in `home/`. GNU Stow links them into `~/.config` and `$HOME`:
 
 ```sh
 ./scripts/link-configs.sh
@@ -33,6 +33,11 @@ macOS packages come from `profiles/darwin/Brewfile`. On Linux they come from
 if it has one. Distros without a profile only get configs linked.
 
 Files that would block a link are renamed to `<name>.bak`.
+
+Shell startup files (`~/.profile`, `~/.bashrc`, `~/.zprofile`, `~/.zshrc`) are
+not links. They are small local files that load the shared versions in
+`config/shell/`, so installers that append to them don't change the repo.
+Move anything worth keeping from them into the repo.
 
 Relocate supported home-root config dirs into `~/.config` with:
 

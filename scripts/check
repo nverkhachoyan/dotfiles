@@ -27,10 +27,10 @@ require_command tmux
 
 printf '%s\n' 'Checking shell syntax...'
 bash -n "$repo_root"/scripts/*.sh "$repo_root"/scripts/lib/*.sh \
-  "$repo_root"/home/.bashrc "$repo_root"/home/.profile
-zsh -n "$repo_root"/home/.zprofile "$repo_root"/home/.zshrc
+  "$repo_root"/config/shell/bashrc "$repo_root"/config/shell/profile
+zsh -n "$repo_root"/config/shell/zprofile "$repo_root"/config/shell/zshrc
 shellcheck -x "$repo_root"/scripts/*.sh "$repo_root"/scripts/lib/*.sh \
-  "$repo_root"/home/.bashrc "$repo_root"/home/.profile \
+  "$repo_root"/config/shell/bashrc "$repo_root"/config/shell/profile \
   "$repo_root"/config/shell/*.sh "$repo_root"/config/shell/env.d/*.sh
 
 printf '%s\n' 'Checking secrets stay ignored...'
@@ -47,15 +47,29 @@ printf '%s\n' 'Checking tmux configuration...'
 HOME="$check_home" tmux -f "$repo_root/config/tmux/tmux.conf" -L "$tmux_socket" start-server
 
 printf '%s\n' 'Checking isolated config linking...'
-HOME="$check_home" XDG_CONFIG_HOME="$check_home/.config" \
-  "$repo_root/scripts/link-configs.sh" >/dev/null
+link_configs() {
+  HOME="$check_home" XDG_CONFIG_HOME="$check_home/.config" \
+    "$repo_root/scripts/link-configs.sh" >/dev/null
+}
+
+# A startup file left linked into the repo by an older setup.
+ln -s "$repo_root/home/.zshrc" "$check_home/.zshrc"
+link_configs
 
 test -L "$check_home/.config/nvim"
 test ! -e "$check_home/.config/zsh"
-test -L "$check_home/.bashrc"
-test -L "$check_home/.profile"
-test -L "$check_home/.zshrc"
-test -L "$check_home/.zprofile"
+for name in profile bashrc zprofile zshrc; do
+  stub="$check_home/.$name"
+  test -f "$stub"
+  test ! -L "$stub"
+  grep -qF "/.config/shell/$name\"" "$stub"
+done
+test ! -e "$check_home/.zshrc.bak"
+
+# Lines an installer appends survive another run.
+printf '%s\n' 'export INSTALLER_LINE=1' >>"$check_home/.zshrc"
+link_configs
+grep -qxF 'export INSTALLER_LINE=1' "$check_home/.zshrc"
 test -L "$check_home/.gitconfig"
 test -L "$check_home/.ssh/config"
 test ! -e "$check_home/.bash_profile"
