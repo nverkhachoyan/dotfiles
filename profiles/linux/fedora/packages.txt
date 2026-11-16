@@ -1,6 +1,7 @@
 alacritty
 awscli2
 bat
+bear
 btop
 clang-tools-extra
 curl
@@ -16,6 +17,9 @@ git-delta
 git-lfs
 golang
 lazydocker
+libasan
+libubsan
+ltrace
 make
 mise
 neovim
@@ -24,10 +28,12 @@ ripgrep
 ShellCheck
 starship
 stow
+strace
 tmux
 tree-sitter-cli
 unzip
 uv
+valgrind
 wget2-wget
 zoxide
 zsh
