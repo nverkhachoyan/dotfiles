@@ -10,8 +10,6 @@ map("n", "<leader>W", "<cmd>wa<cr>", { desc = "Save all" })
 map("n", "<leader>qq", "<cmd>q<cr>", { desc = "Quit" })
 
 map("n", "<leader>e", vim.diagnostic.open_float, { desc = "Show diagnostics" })
-map("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
-map("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
 map("n", "<leader>dl", vim.diagnostic.setloclist, { desc = "Diagnostics list" })
 map("n", "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", { desc = "Workspace diagnostics" })
 map("n", "<leader>xd", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", { desc = "Document diagnostics" })
