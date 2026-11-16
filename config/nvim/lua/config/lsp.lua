@@ -11,7 +11,7 @@ function M.capabilities()
 	return capabilities
 end
 
-function M.on_attach(_, bufnr)
+function M.keymaps(bufnr)
 	local map = function(keys, func, desc)
 		vim.keymap.set("n", keys, func, { buffer = bufnr, desc = desc })
 	end
