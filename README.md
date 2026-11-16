@@ -41,6 +41,9 @@ not links. They are small local files that load the shared versions in
 `config/shell/`, so installers that append to them don't change the repo.
 Move anything worth keeping from them into the repo.
 
+Bash and zsh are both configured. Bootstrap doesn't change the login shell;
+run `chsh -s "$(command -v zsh)"` to switch to zsh.
+
 Relocate supported home-root config dirs into `~/.config` with:
 
 ```sh

@@ -2,6 +2,11 @@
 
 [[ $- == *i* ]] || return
 
+# The distro's stock ~/.bashrc did this before the stub replaced it. On Fedora,
+# /etc/bashrc is what loads /etc/profile.d (completion, vte) in non-login shells.
+# shellcheck source=/dev/null
+[ -f /etc/bashrc ] && . /etc/bashrc
+
 # shellcheck source=/dev/null
 [ -f "$HOME/.config/shell/env.sh" ] && . "$HOME/.config/shell/env.sh"
 # shellcheck source=/dev/null
