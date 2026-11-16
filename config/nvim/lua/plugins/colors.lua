@@ -44,7 +44,6 @@ return {
 				},
 			})
 
-			vim.env.BAT_THEME = "catppuccin"
 			vim.cmd.colorscheme("catppuccin")
 		end,
 	},
