@@ -19,6 +19,7 @@ export NODE_REPL_HISTORY="$XDG_DATA_HOME/node_history"
 export DOTNET_CLI_HOME="$XDG_DATA_HOME/dotnet"
 export GOPATH="$HOME/Dev/go"
 export CARGO_HOME="$XDG_DATA_HOME/cargo"
+export RUSTUP_HOME="${RUSTUP_HOME:-$XDG_DATA_HOME/rustup}"
 export BUN_INSTALL="${BUN_INSTALL:-$HOME/.bun}"
 
 path_prepend() {
