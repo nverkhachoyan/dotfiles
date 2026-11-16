@@ -33,9 +33,15 @@ detect_linux_distro() {
     ids="$(. /etc/os-release && printf '%s %s' "${ID:-}" "${ID_LIKE:-}")"
   fi
 
+  # ID comes first, then ID_LIKE from closest to furthest relative.
   for id in $ids; do
     case "$id" in
-      fedora | rhel)
+      # RHEL and its rebuilds list fedora in ID_LIKE, but the Fedora
+      # profile's COPRs and package names don't exist there.
+      rhel | centos)
+        break
+        ;;
+      fedora)
         printf 'fedora\n'
         return
         ;;
