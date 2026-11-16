@@ -19,6 +19,7 @@ mise
 neovim
 openssh-clients
 ripgrep
+ShellCheck
 starship
 stow
 tmux
