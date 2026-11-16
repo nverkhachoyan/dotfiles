@@ -1,5 +1,7 @@
 alacritty
+awscli2
 bat
+btop
 clang-tools-extra
 curl
 direnv
@@ -26,6 +28,7 @@ tmux
 tree-sitter-cli
 unzip
 uv
+wget2-wget
 zoxide
 zsh
 zsh-autosuggestions
