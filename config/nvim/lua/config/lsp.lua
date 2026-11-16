@@ -26,7 +26,6 @@ function M.servers()
 		clangd = {},
 		gopls = {},
 		lua_ls = {},
-		nil_ls = {},
 		ruff = {},
 		rust_analyzer = {},
 		ts_ls = {
@@ -39,7 +38,6 @@ function M.servers()
 				"typescript.tsx",
 			},
 		},
-		vale_ls = {},
 	}
 end
 
