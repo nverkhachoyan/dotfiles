@@ -12,11 +12,6 @@ if [ -z "$stow_bin" ]; then
 fi
 
 mkdir -p "$HOME/.config" "$HOME/.ssh/config.d"
-mkdir -p "$HOME/.local/share/dotnet"
-mkdir -p "$HOME/.local/share/cargo"
-mkdir -p "$HOME/.local/state/bash" "$HOME/.local/state/zsh"
-mkdir -p "$HOME/Dev/go/bin"
-mkdir -p "$HOME/Documents/Media/Screenshots"
 
 repo_real="$(cd "$repo_root" && pwd -P)"
 

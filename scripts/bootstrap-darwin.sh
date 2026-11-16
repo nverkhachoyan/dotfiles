@@ -56,6 +56,10 @@ fi
 eval "$($brew_bin shellenv)"
 brew bundle --file "$repo_root/profiles/darwin/Brewfile"
 
+screenshots_dir="$HOME/Documents/Media/Screenshots"
+mkdir -p "$screenshots_dir"
+defaults write com.apple.screencapture location -string "$screenshots_dir"
+
 # Stow and mise are installed by the Brewfile above.
 "$repo_root/scripts/link-configs.sh"
 "$repo_root/scripts/relocate-home-configs.sh"
