@@ -15,9 +15,9 @@ export CARGO_HOME="${CARGO_HOME:-$XDG_DATA_HOME/cargo}"
 export GOPATH="${GOPATH:-$HOME/Dev/go}"
 export PNPM_HOME="${PNPM_HOME:-$HOME/Library/pnpm}"
 
-export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$CARGO_HOME/bin:$PNPM_HOME:$GOPATH/bin:$PATH"
+export PATH="$HOME/.local/bin:$XDG_DATA_HOME/mise/shims:$CARGO_HOME/bin:$PNPM_HOME:$GOPATH/bin:$PATH"
 
-mkdir -p "$HOME/.local/bin" "$HOME/.local/share/mise/shims" "$CARGO_HOME/bin" "$GOPATH/bin" "$PNPM_HOME"
+mkdir -p "$HOME/.local/bin" "$XDG_DATA_HOME/mise/shims" "$CARGO_HOME/bin" "$GOPATH/bin" "$PNPM_HOME"
 
 installer_dir="$(mktemp -d)"
 trap 'rm -rf "$installer_dir"' EXIT

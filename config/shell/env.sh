@@ -55,7 +55,7 @@ path_prepend "${PNPM_HOME:-}"
 path_prepend "$CARGO_HOME/bin"
 path_prepend "$BUN_INSTALL/bin"
 path_prepend "$HOME/.lmstudio/bin"
-path_prepend "$HOME/.local/share/mise/shims"
+path_prepend "$XDG_DATA_HOME/mise/shims"
 path_prepend "/usr/local/sbin"
 path_prepend "/usr/local/bin"
 
