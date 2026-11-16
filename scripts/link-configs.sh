@@ -11,7 +11,7 @@ if [ -z "$stow_bin" ]; then
   exit 1
 fi
 
-mkdir -p "$HOME/.config" "$HOME/.ssh"
+mkdir -p "$HOME/.config" "$HOME/.ssh/config.d"
 mkdir -p "$HOME/.local/share/dotnet"
 mkdir -p "$HOME/.local/share/cargo"
 mkdir -p "$HOME/.local/state/bash" "$HOME/.local/state/zsh"
@@ -89,6 +89,6 @@ install_shell_stub .bashrc bashrc
 install_shell_stub .zprofile zprofile
 install_shell_stub .zshrc zshrc
 
-chmod 700 "$HOME/.ssh"
+chmod 700 "$HOME/.ssh" "$HOME/.ssh/config.d"
 
 printf 'GNU Stow config links are in place.\n'
