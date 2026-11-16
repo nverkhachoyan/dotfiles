@@ -1,9 +1,6 @@
 local map = vim.keymap.set
 
-map("n", "<C-h>", "<C-w>h", { desc = "Go to left window" })
-map("n", "<C-j>", "<C-w>j", { desc = "Go to lower window" })
-map("n", "<C-k>", "<C-w>k", { desc = "Go to upper window" })
-map("n", "<C-l>", "<C-w>l", { desc = "Go to right window" })
+-- <C-h/j/k/l> window moves live with vim-tmux-navigator in plugins/editor.lua.
 
 map("n", "<leader>w", "<cmd>w<cr>", { desc = "Save" })
 map("n", "<leader>W", "<cmd>wa<cr>", { desc = "Save all" })

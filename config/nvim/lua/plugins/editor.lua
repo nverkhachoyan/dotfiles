@@ -88,6 +88,21 @@ return {
 		end,
 	},
 	{
+		-- Pairs with the is_vim bindings in config/tmux/keybindings.conf, so
+		-- <C-h/j/k/l> cross between Neovim splits and tmux panes. Outside tmux
+		-- they move between splits only.
+		"christoomey/vim-tmux-navigator",
+		init = function()
+			vim.g.tmux_navigator_no_mappings = 1
+		end,
+		keys = {
+			{ "<C-h>", "<cmd>TmuxNavigateLeft<cr>", desc = "Go to left window" },
+			{ "<C-j>", "<cmd>TmuxNavigateDown<cr>", desc = "Go to lower window" },
+			{ "<C-k>", "<cmd>TmuxNavigateUp<cr>", desc = "Go to upper window" },
+			{ "<C-l>", "<cmd>TmuxNavigateRight<cr>", desc = "Go to right window" },
+		},
+	},
+	{
 		"folke/trouble.nvim",
 		dependencies = { "nvim-tree/nvim-web-devicons" },
 		opts = {},
