@@ -31,6 +31,8 @@ then run `scripts/install-toolchains.sh`, which installs everything in
 macOS packages come from `profiles/darwin/Brewfile`. On Linux they come from
 `profiles/linux/<distro>/packages.txt`, after running that profile's `setup.sh`
 if it has one. Distros without a profile only get configs linked.
+The Nerd Fonts the terminal configs use come from
+`scripts/install-fonts-linux.sh`, since distros don't package them.
 
 Files that would block a link are renamed to `<name>.bak`.
 

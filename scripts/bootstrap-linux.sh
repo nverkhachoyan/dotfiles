@@ -10,6 +10,7 @@ source "$repo_root/scripts/lib/os.sh"
 require_os linux
 
 "$repo_root/scripts/install-packages-linux.sh"
+"$repo_root/scripts/install-fonts-linux.sh"
 "$repo_root/scripts/link-configs.sh"
 "$repo_root/scripts/relocate-home-configs.sh"
 "$repo_root/scripts/install-toolchains.sh"
