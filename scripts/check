@@ -87,4 +87,28 @@ test -f "$check_home/.config/alacritty/themes/codex-noir.toml"
 test ! -e "$check_home/.config/alacritty/color.toml"
 test -f "$check_home/.config/mise/config.toml"
 
+printf '%s\n' 'Checking home-root config relocation...'
+relocate_home="$check_home/relocate"
+relocate_configs() {
+  HOME="$relocate_home" "$repo_root/scripts/relocate-home-configs.sh" >/dev/null 2>&1
+}
+
+mkdir -p "$relocate_home/.docker" "$relocate_home/.aws" \
+  "$relocate_home/.config/aws" "$relocate_home/.config/kube"
+touch "$relocate_home/.docker/config.json" "$relocate_home/.aws/sso" \
+  "$relocate_home/.config/aws/config"
+ln -s "$relocate_home/missing" "$relocate_home/.kube"
+relocate_configs
+relocate_configs
+
+# Moved, with a link left behind.
+test -f "$relocate_home/.config/docker/config.json"
+test "$relocate_home/.docker" -ef "$relocate_home/.config/docker"
+# Both held data, so both stay put.
+test ! -L "$relocate_home/.aws"
+test -f "$relocate_home/.aws/sso"
+test -f "$relocate_home/.config/aws/config"
+# A broken link gets replaced.
+test "$relocate_home/.kube" -ef "$relocate_home/.config/kube"
+
 printf '%s\n' 'All checks passed.'
