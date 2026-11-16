@@ -5,9 +5,7 @@ HISTFILE="${XDG_STATE_HOME:-$HOME/.local/state}/zsh/history"
 HISTSIZE=50000
 SAVEHIST=50000
 
-setopt APPEND_HISTORY
 setopt SHARE_HISTORY
-setopt HIST_IGNORE_DUPS
 setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_FIND_NO_DUPS
 setopt HIST_SAVE_NO_DUPS
@@ -65,6 +63,19 @@ if command -v starship >/dev/null 2>&1; then
   eval "$(starship init zsh)"
 fi
 
+path_prepend "$HOME/.opencode/bin"
+
+# bun completions
+[ -s "$BUN_INSTALL/_bun" ] && source "$BUN_INSTALL/_bun"
+
+if command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate zsh)"
+fi
+path_prepend "$HOME/.config/emacs/bin"
+
+[ -n "${PNPM_HOME:-}" ] && path_prepend "$PNPM_HOME/bin"
+
+# Must be loaded last.
 for file in \
   /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh \
   /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh \
@@ -75,21 +86,3 @@ do
     break
   fi
 done
-
-export PATH="$HOME/.opencode/bin:$PATH"
-
-# bun completions
-[ -s "$BUN_INSTALL/_bun" ] && source "$BUN_INSTALL/_bun"
-
-if command -v mise >/dev/null 2>&1; then
-  eval "$(mise activate zsh)"
-fi
-export PATH="$HOME/.config/emacs/bin:$PATH"
-
-# pnpm
-if [ -n "${PNPM_HOME:-}" ]; then
-  case ":$PATH:" in
-    *":$PNPM_HOME/bin:"*) ;;
-    *) export PATH="$PNPM_HOME/bin:$PATH" ;;
-  esac
-fi

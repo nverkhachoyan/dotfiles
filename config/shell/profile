@@ -15,5 +15,3 @@ else
   # shellcheck source=/dev/null
   [ -f "$HOME/.config/shell/env.sh" ] && . "$HOME/.config/shell/env.sh"
 fi
-
-export PATH="$HOME/.local/bin:$PATH"
