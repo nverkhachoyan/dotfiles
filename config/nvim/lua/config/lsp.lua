@@ -17,9 +17,6 @@ function M.on_attach(_, bufnr)
 	end
 
 	map("gd", vim.lsp.buf.definition, "Go to definition")
-	map("gr", vim.lsp.buf.references, "References")
-	map("gi", vim.lsp.buf.implementation, "Implementation")
-	map("K", vim.lsp.buf.hover, "Hover")
 	map("<leader>rn", vim.lsp.buf.rename, "Rename")
 	map("<leader>ca", vim.lsp.buf.code_action, "Code action")
 end

@@ -6,7 +6,7 @@ map("n", "<C-k>", "<C-w>k", { desc = "Go to upper window" })
 map("n", "<C-l>", "<C-w>l", { desc = "Go to right window" })
 
 map("n", "<leader>w", "<cmd>w<cr>", { desc = "Save" })
-map("n", "<leader>wa", "<cmd>wa<cr>", { desc = "Save all" })
+map("n", "<leader>W", "<cmd>wa<cr>", { desc = "Save all" })
 map("n", "<leader>qq", "<cmd>q<cr>", { desc = "Quit" })
 
 map("n", "<leader>e", vim.diagnostic.open_float, { desc = "Show diagnostics" })
