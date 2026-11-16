@@ -1,7 +1,10 @@
-# Linux Profile
+# Linux Profiles
 
-Linux currently uses the shared configs under `config/`.
+Linux uses the shared configs under `config/`. Each distro folder here can add:
 
-Package installation is intentionally not automated here because Arch/Omarchy
-already provides a curated base system. Add distro-specific package lists here
-only when a package needs to be managed by this dotfiles repo.
+- `packages.txt`: packages to install, one per line (`#` comments allowed).
+- `setup.sh`: optional, runs before the install (for example, enabling repos).
+
+`scripts/install-packages-linux.sh` picks the folder from `/etc/os-release`.
+Only `fedora/` exists today. Distros without a folder skip the package step
+and only get configs linked.
