@@ -33,8 +33,12 @@ zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 zstyle ':completion:*' squeeze-slashes true
 zstyle ':completion:*' special-dirs true
 
-bindkey '^[[A' up-line-or-history
-bindkey '^[[B' down-line-or-history
+# Up/Down search history for what's typed so far, like the bash bindings.
+autoload -Uz up-line-or-beginning-search down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+bindkey '^[[A' up-line-or-beginning-search
+bindkey '^[[B' down-line-or-beginning-search
 bindkey '^R' history-incremental-search-backward
 bindkey '^L' clear-screen
 
@@ -47,8 +51,7 @@ if command -v fzf >/dev/null 2>&1 && [[ -t 0 && -t 1 ]]; then
 fi
 
 if command -v zoxide >/dev/null 2>&1; then
-  eval "$(zoxide init zsh)"
-  alias cd='z'
+  eval "$(zoxide init zsh --cmd cd)"
 fi
 
 for file in \

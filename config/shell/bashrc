@@ -43,8 +43,7 @@ if command -v fzf >/dev/null 2>&1 && [[ -t 0 && -t 1 && :$SHELLOPTS: =~ :(vi|ema
 fi
 
 if command -v zoxide >/dev/null 2>&1; then
-  eval "$(zoxide init bash)"
-  alias cd='z'
+  eval "$(zoxide init bash --cmd cd)"
 fi
 
 bind '"\e[A": history-search-backward'
