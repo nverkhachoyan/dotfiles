@@ -21,7 +21,10 @@ setopt COMPLETE_IN_WORD
 setopt ALWAYS_TO_END
 
 autoload -Uz compinit
-compinit -d "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/.zcompdump"
+zsh_cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
+[[ -d "$zsh_cache_dir" ]] || mkdir -p "$zsh_cache_dir"
+compinit -d "$zsh_cache_dir/.zcompdump"
+unset zsh_cache_dir
 
 zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
