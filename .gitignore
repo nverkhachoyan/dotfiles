@@ -3,3 +3,8 @@
 
 .config-backups/
 .local/state/config-migration-backups/
+
+# Stow links these folders into ~/.config, so the apps write into the repo.
+# gh puts OAuth tokens in hosts.yml when it can't use the system keyring.
+config/gh/*
+!config/gh/config.yml

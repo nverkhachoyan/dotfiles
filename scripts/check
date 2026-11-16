@@ -33,6 +33,16 @@ shellcheck -x "$repo_root"/scripts/*.sh "$repo_root"/scripts/lib/*.sh \
   "$repo_root"/home/.bashrc "$repo_root"/home/.profile \
   "$repo_root"/config/shell/*.sh "$repo_root"/config/shell/env.d/*.sh
 
+printf '%s\n' 'Checking secrets stay ignored...'
+if ! git -C "$repo_root" check-ignore -q config/gh/hosts.yml; then
+  printf '%s\n' 'config/gh/hosts.yml must be gitignored (it can hold OAuth tokens).' >&2
+  exit 1
+fi
+if git -C "$repo_root" check-ignore -q config/gh/config.yml; then
+  printf '%s\n' 'config/gh/config.yml is gitignored but should be tracked.' >&2
+  exit 1
+fi
+
 printf '%s\n' 'Checking tmux configuration...'
 HOME="$check_home" tmux -f "$repo_root/config/tmux/tmux.conf" -L "$tmux_socket" start-server
 
