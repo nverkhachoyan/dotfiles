@@ -22,8 +22,9 @@ export CARGO_HOME="$XDG_DATA_HOME/cargo"
 export RUSTUP_HOME="${RUSTUP_HOME:-$XDG_DATA_HOME/rustup}"
 export BUN_INSTALL="${BUN_INSTALL:-$HOME/.bun}"
 
+# Put a directory first in PATH, unless it's missing or already there.
 path_prepend() {
-  [ -n "$1" ] || return
+  [ -d "$1" ] || return 0
 
   case ":$PATH:" in
     *":$1:"*)
@@ -50,12 +51,7 @@ if [ -n "$DOTFILES_OS" ] && [ -f "$XDG_CONFIG_HOME/shell/env.d/$DOTFILES_OS.sh" 
   . "$XDG_CONFIG_HOME/shell/env.d/$DOTFILES_OS.sh"
 fi
 
-path_prepend "$GOPATH/bin"
-path_prepend "${PNPM_HOME:-}"
-path_prepend "$CARGO_HOME/bin"
-path_prepend "$BUN_INSTALL/bin"
-path_prepend "$HOME/.lmstudio/bin"
-path_prepend "$XDG_DATA_HOME/mise/shims"
+# Lowest priority first, so user tools win over Homebrew and the system.
 path_prepend "/usr/local/sbin"
 path_prepend "/usr/local/bin"
 
@@ -63,14 +59,22 @@ if [ -n "${DOTFILES_PLATFORM_PATHS:-}" ]; then
   old_ifs="$IFS"
   IFS=:
   for platform_path in $DOTFILES_PLATFORM_PATHS; do
-    if [ -d "$platform_path" ]; then
-      path_prepend "$platform_path"
-    fi
+    path_prepend "$platform_path"
   done
   IFS="$old_ifs"
+  unset old_ifs platform_path
 fi
 
+path_prepend "$HOME/.config/emacs/bin"
+path_prepend "$HOME/.lmstudio/bin"
+path_prepend "$HOME/.opencode/bin"
+path_prepend "$BUN_INSTALL/bin"
+path_prepend "$GOPATH/bin"
+path_prepend "${PNPM_HOME:-}"
+path_prepend "$CARGO_HOME/bin"
+path_prepend "$XDG_DATA_HOME/mise/shims"
 path_prepend "$HOME/bin"
 path_prepend "$HOME/.local/bin"
 
 export PATH
+unset -f path_prepend
