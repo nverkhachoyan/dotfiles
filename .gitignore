@@ -8,3 +8,6 @@
 # gh puts OAuth tokens in hosts.yml when it can't use the system keyring.
 config/gh/*
 !config/gh/config.yml
+config/zed/*
+!config/zed/settings.json
+!config/zed/keymap.json

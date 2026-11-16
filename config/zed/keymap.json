@@ -1,0 +1,116 @@
+// Zed keymap
+//
+// For information on binding keys, see the Zed
+// documentation: https://zed.dev/docs/key-bindings
+//
+// To see the default key bindings run `zed: open default keymap`
+// from the command palette.
+[
+  {
+    "context": "Workspace",
+    "bindings": {
+      // "shift shift": "file_finder::Toggle"
+    },
+  },
+  {
+    "context": "Editor && vim_mode == insert",
+    "bindings": {
+      // "j k": "vim::NormalBefore"
+    },
+  },
+  {
+    "bindings": {
+      "alt-cmd-=": [
+        "zed::IncreaseUiFontSize",
+        {
+          "persist": false,
+        },
+      ],
+    },
+  },
+  {
+    "context": "Welcome",
+    "unbind": {
+      "cmd-+": [
+        "zed::IncreaseUiFontSize",
+        {
+          "persist": false,
+        },
+      ],
+    },
+  },
+  {
+    "bindings": {
+      "alt-cmd--": [
+        "zed::DecreaseUiFontSize",
+        {
+          "persist": false,
+        },
+      ],
+    },
+  },
+  {
+    "context": "Welcome",
+    "unbind": {
+      "cmd--": [
+        "zed::DecreaseUiFontSize",
+        {
+          "persist": false,
+        },
+      ],
+    },
+  },
+  {
+    "context": "Welcome",
+    "bindings": {
+      "ctrl-cmd-0": [
+        "zed::ResetUiFontSize",
+        {
+          "persist": false,
+        },
+      ],
+    },
+  },
+  {
+    "context": "Welcome",
+    "unbind": {
+      "cmd-0": [
+        "zed::ResetUiFontSize",
+        {
+          "persist": false,
+        },
+      ],
+    },
+  },
+  {
+    "bindings": {
+      "ctrl-cmd-0": [
+        "zed::ResetUiFontSize",
+        {
+          "persist": false,
+        },
+      ],
+    },
+  },
+  {
+    "context": "Onboarding",
+    "unbind": {
+      "cmd-0": [
+        "zed::ResetUiFontSize",
+        {
+          "persist": false,
+        },
+      ],
+    },
+  },
+  {
+    "context": "Editor && VimControl && !VimWaiting && !menu",
+    "bindings": {
+      "space f": "file_finder::Toggle",
+      "space e": "workspace::ToggleLeftDock",
+      "space w": "workspace::Save",
+      "space q": "pane::CloseActiveItem",
+      "space g": "workspace::NewSearch",
+    },
+  },
+]
