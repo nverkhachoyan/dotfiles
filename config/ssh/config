@@ -3,6 +3,7 @@ Host *
   ServerAliveCountMax 3
   ControlMaster auto
   ControlPersist 10m
+  ControlPath ~/.ssh/cm-%C
   AddKeysToAgent yes
   IgnoreUnknown UseKeychain
   UseKeychain yes
