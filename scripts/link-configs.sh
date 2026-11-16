@@ -80,10 +80,7 @@ install_shell_stub() {
     backup_file "$target"
   fi
 
-  printf '%s\n' \
-    '# Local to this machine: loads the shared config from the dotfiles repo.' \
-    '# Installers may append below. Move anything worth keeping into the repo.' \
-    "$line" >"$target"
+  printf '%s\n' '# Stub created by dotfiles' "$line" >"$target"
   printf 'Wrote shell stub %s\n' "$target"
 }
 
