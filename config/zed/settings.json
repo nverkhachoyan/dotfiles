@@ -7,6 +7,20 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "ssh_connections": [
+    {
+      "host": "iloveyou",
+      "args": [],
+      "projects": [
+        {
+          "paths": [
+            "/Users/nverk/Dev/tuck"
+          ]
+        }
+      ]
+    }
+  ],
+  "format_on_save": "on",
   "redact_private_values": false,
   "accessible_mode": false,
   "which_key": {
