@@ -66,6 +66,11 @@ Run the local validation suite with:
 Alacritty uses the committed Codex Noir theme by default. Select another
 committed theme by changing the import in `config/alacritty/alacritty.toml`.
 
-Tool versions are pinned in `config/mise/config.toml`; run `mise outdated` to
-see updates. Change the `rust` entry there to use a Rust version other than
+Tools are listed in `config/mise/config.toml`, mostly as `latest`, and
+`config/mise/mise.lock` pins the exact version and checksum of each one for
+Linux x64 and macOS arm64. Bootstrap installs what the lockfile says, so
+nothing moves until you update it. Run `mise outdated` to see updates; after
+editing `config.toml`, run `mise lock --global` to refresh the lockfile
+(`scripts/check` fails if it's out of date). The `locks/` folder next to it
+holds the dependency locks for npm and pipx tools. Change the `rust` entry there to use a Rust version other than
 stable.

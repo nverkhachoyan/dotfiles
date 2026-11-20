@@ -13,5 +13,6 @@ export RUSTUP_HOME="${RUSTUP_HOME:-$XDG_DATA_HOME/rustup}"
 export GOPATH="${GOPATH:-$HOME/Dev/go}"
 export PATH="$HOME/.local/bin:$XDG_DATA_HOME/mise/shims:$CARGO_HOME/bin:$PATH"
 
-mise install --yes
+# Install exactly what mise.lock records, so every machine gets the same builds.
+mise install --locked --yes
 mise reshim

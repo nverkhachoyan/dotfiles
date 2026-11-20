@@ -87,6 +87,12 @@ test -f "$check_home/.config/alacritty/themes/codex-noir.toml"
 test ! -e "$check_home/.config/alacritty/color.toml"
 test -f "$check_home/.config/mise/config.toml"
 
+if command -v mise >/dev/null 2>&1; then
+  printf '%s\n' 'Checking mise.lock matches config.toml...'
+  (cd "$check_home" && HOME="$check_home" XDG_CONFIG_HOME="$check_home/.config" \
+    mise lock --global --check >/dev/null)
+fi
+
 printf '%s\n' 'Checking home-root config relocation...'
 relocate_home="$check_home/relocate"
 relocate_configs() {
