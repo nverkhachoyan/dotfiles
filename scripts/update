@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# Update everything this repo installs. Pass sections to run only some of
+# them: system, tools, nvim. With none, all run.
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+# shellcheck source=scripts/lib/os.sh
+source "$repo_root/scripts/lib/os.sh"
+
+usage() {
+  printf 'Usage: %s [system] [tools] [nvim]\n' "${0##*/}" >&2
+  exit 2
+}
+
+sections=("$@")
+[ "${#sections[@]}" -gt 0 ] || sections=(system tools nvim)
+for section in "${sections[@]}"; do
+  case "$section" in
+    system | tools | nvim) ;;
+    *) usage ;;
+  esac
+done
+
+step() {
+  printf '\n==> %s\n' "$1"
+}
+
+update_system() {
+  case "$(detect_os)" in
+    darwin)
+      step 'Homebrew'
+      brew update
+      brew upgrade
+      # Also installs anything added to the Brewfile since the last run.
+      brew bundle --file "$repo_root/profiles/darwin/Brewfile"
+      ;;
+    linux)
+      step 'System packages'
+      case "$(detect_linux_distro)" in
+        fedora) sudo dnf upgrade --refresh ;;
+        arch) sudo pacman -Syu ;;
+        debian) sudo apt-get update && sudo apt-get upgrade ;;
+        *) printf 'No package manager known for this distro, skipping.\n' ;;
+      esac
+      # Also installs anything added to packages.txt since the last run.
+      "$repo_root/scripts/install-packages-linux.sh"
+
+      if command -v flatpak >/dev/null 2>&1; then
+        step 'Flatpak'
+        flatpak update
+      fi
+      ;;
+  esac
+}
+
+update_tools() {
+  step 'mise tools'
+  # Moves every tool to the newest version its config.toml entry allows,
+  # rewrites mise.lock and removes the versions it replaced. This includes
+  # Rust stable.
+  mise upgrade --global --prune
+  # Fill in lockfile entries for the other platforms in lockfile_platforms.
+  mise lock --global
+}
+
+update_nvim() {
+  step 'Neovim plugins'
+  # Updates lazy-lock.json in the repo; the plugin build steps run too
+  # (nvim-treesitter's :TSUpdate).
+  nvim --headless '+Lazy! sync' +qa
+}
+
+for section in "${sections[@]}"; do
+  "update_$section"
+done
+
+step 'Lockfile changes to review and commit'
+git -C "$repo_root" status --short -- config/mise config/nvim/lazy-lock.json

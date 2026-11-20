@@ -72,5 +72,17 @@ Linux x64 and macOS arm64. Bootstrap installs what the lockfile says, so
 nothing moves until you update it. Run `mise outdated` to see updates; after
 editing `config.toml`, run `mise lock --global` to refresh the lockfile
 (`scripts/check` fails if it's out of date). The `locks/` folder next to it
-holds the dependency locks for npm and pipx tools. Change the `rust` entry there to use a Rust version other than
+holds the dependency locks for npm and pipx tools.
+
+Update everything with:
+
+```sh
+./scripts/update            # or pick sections: system, tools, nvim
+```
+
+`system` upgrades the OS packages (and Flatpaks on Linux) and installs any
+new entries in the package lists. `tools` moves each mise tool to its newest
+allowed version, Rust stable included, and rewrites `mise.lock`. `nvim` syncs
+the Neovim plugins and updates `lazy-lock.json`. Review and commit the
+lockfile diffs it lists at the end. Change the `rust` entry there to use a Rust version other than
 stable.

@@ -27,12 +27,12 @@ require_command tmux
 
 printf '%s\n' 'Checking shell syntax...'
 bash -n "$repo_root"/scripts/*.sh "$repo_root"/scripts/lib/*.sh \
-  "$repo_root"/scripts/bootstrap "$repo_root"/scripts/check \
+  "$repo_root"/scripts/bootstrap "$repo_root"/scripts/check "$repo_root"/scripts/update \
   "$repo_root"/profiles/linux/*/setup.sh \
   "$repo_root"/config/shell/bashrc "$repo_root"/config/shell/profile
 zsh -n "$repo_root"/config/shell/zprofile "$repo_root"/config/shell/zshrc
 shellcheck -x "$repo_root"/scripts/*.sh "$repo_root"/scripts/lib/*.sh \
-  "$repo_root"/scripts/bootstrap "$repo_root"/scripts/check \
+  "$repo_root"/scripts/bootstrap "$repo_root"/scripts/check "$repo_root"/scripts/update \
   "$repo_root"/profiles/linux/*/setup.sh \
   "$repo_root"/config/shell/bashrc "$repo_root"/config/shell/profile \
   "$repo_root"/config/shell/*.sh "$repo_root"/config/shell/env.d/*.sh
