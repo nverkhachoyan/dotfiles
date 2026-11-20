@@ -84,5 +84,16 @@ Update everything with:
 new entries in the package lists. `tools` moves each mise tool to its newest
 allowed version, Rust stable included, and rewrites `mise.lock`. `nvim` syncs
 the Neovim plugins and updates `lazy-lock.json`. Review and commit the
-lockfile diffs it lists at the end. Change the `rust` entry there to use a Rust version other than
+lockfile diffs it lists at the end.
+
+See where the machine and the package lists disagree with:
+
+```sh
+./scripts/drift
+```
+
+It lists packages from the lists that aren't installed, packages you
+installed by hand that aren't in the lists, and OS packages that duplicate a
+tool mise now provides. It never installs or removes anything. On Fedora it
+reads `dnf history`, ignoring what the OS image came with. Change the `rust` entry there to use a Rust version other than
 stable.
