@@ -28,6 +28,12 @@ The dispatcher runs `scripts/bootstrap-darwin.sh` on macOS and
 then run `scripts/install-toolchains.sh`, which installs everything in
 `config/mise/config.toml` and the stable Rust toolchain.
 
+Cross-platform CLI tools (ripgrep, fd, bat, fzf, delta, gh, neovim, uv and
+so on) come from mise, so both OSes get the same versions. The OS package
+lists only hold system pieces: compilers and debuggers, zsh plugins, GUI apps,
+and the few tools the shell needs before mise is set up (starship, direnv,
+zoxide). eza and btop stay there too because they don't ship macOS binaries.
+
 macOS packages come from `profiles/darwin/Brewfile`. On Linux they come from
 `profiles/linux/<distro>/packages.txt`, after running that profile's `setup.sh`
 if it has one. Distros without a profile only get configs linked.
