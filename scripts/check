@@ -20,21 +20,22 @@ require_command() {
 }
 
 require_command bash
+require_command python3
 require_command zsh
 require_command shellcheck
 require_command stow
 require_command tmux
 
-printf '%s\n' 'Checking shell syntax...'
+printf '%s\n' 'Checking script syntax...'
 bash -n "$repo_root"/scripts/*.sh "$repo_root"/scripts/lib/*.sh \
   "$repo_root"/scripts/bootstrap "$repo_root"/scripts/check "$repo_root"/scripts/update \
-  "$repo_root"/scripts/drift \
   "$repo_root"/profiles/linux/*/setup.sh \
   "$repo_root"/config/shell/bashrc "$repo_root"/config/shell/profile
 zsh -n "$repo_root"/config/shell/zprofile "$repo_root"/config/shell/zshrc
+python3 -c 'import ast, sys; ast.parse(open(sys.argv[1]).read(), sys.argv[1])' \
+  "$repo_root"/scripts/drift
 shellcheck -x "$repo_root"/scripts/*.sh "$repo_root"/scripts/lib/*.sh \
   "$repo_root"/scripts/bootstrap "$repo_root"/scripts/check "$repo_root"/scripts/update \
-  "$repo_root"/scripts/drift \
   "$repo_root"/profiles/linux/*/setup.sh \
   "$repo_root"/config/shell/bashrc "$repo_root"/config/shell/profile \
   "$repo_root"/config/shell/*.sh "$repo_root"/config/shell/env.d/*.sh

@@ -1,159 +1,186 @@
-#!/usr/bin/env bash
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.11"
+# dependencies = []
+# ///
+"""Report where the installed packages and the package lists in this repo
+disagree. It only reports; it never installs or removes anything."""
 
-set -euo pipefail
+import json
+import os
+import platform
+import subprocess
+import sys
+from pathlib import Path
 
-# Report where the installed packages and the package lists in this repo
-# disagree. It only reports; it never installs or removes anything.
-repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+REPO_ROOT = Path(__file__).resolve().parent.parent
 
-# shellcheck source=scripts/lib/os.sh
-source "$repo_root/scripts/lib/os.sh"
 
-work_dir="$(mktemp -d)"
-trap 'rm -rf "$work_dir"' EXIT
+def run(*args: str, check: bool = True) -> str:
+    return subprocess.run(args, capture_output=True, text=True, check=check).stdout
 
-drift=0
 
-# Print a titled list from a file, or nothing if the file is empty.
-report() {
-  local title="$1" file="$2"
+def lines(text: str) -> set[str]:
+    return {line.strip() for line in text.splitlines() if line.strip()}
 
-  [ -s "$file" ] || return 0
-  drift=1
-  printf '\n%s\n' "$title"
-  sed 's/^/  /' "$file"
-}
 
-# Packages from the OS package manager that install a command mise also
-# provides, as "package (command)". mise's shims come first in PATH, so these
-# copies are unused.
-mise_duplicates() {
-  local owner_cmd="$1" shims_dir name owner
+def linux_distro() -> str:
+    # scripts/lib/os.sh holds the distro rules, so ask it rather than copy them.
+    lib = REPO_ROOT / "scripts/lib/os.sh"
+    return run("bash", "-c", f'source "{lib}" && detect_linux_distro').strip()
 
-  shims_dir="${XDG_DATA_HOME:-$HOME/.local/share}/mise/shims"
-  [ -d "$shims_dir" ] || return 0
 
-  for name in "$shims_dir"/*; do
-    name="${name##*/}"
-    owner="$("$owner_cmd" "$name")" || continue
-    printf '%s (%s)\n' "$owner" "$name"
-  done | LC_ALL=C sort -u
-}
+def report(title: str, items: set[str] | list[str]) -> bool:
+    if not items:
+        return False
+    print(f"\n{title}")
+    for item in sorted(items):
+        print(f"  {item}")
+    return True
 
-# Drop the packages listed in duplicates from a list of package names, so
-# each package is reported once.
-without_duplicates() {
-  cut -d' ' -f1 "$work_dir/duplicates" | LC_ALL=C sort -u >"$work_dir/duplicate_names"
-  LC_ALL=C comm -23 - "$work_dir/duplicate_names"
-}
 
-rpm_owner() {
-  [ -e "/usr/bin/$1" ] && rpm -qf --qf '%{NAME}\n' "/usr/bin/$1" 2>/dev/null
-}
+def mise_duplicates(owner) -> dict[str, set[str]]:
+    """Packages from the OS package manager that install a command mise also
+    provides, mapped to those commands. mise's shims come first in PATH, so
+    these copies are unused."""
+    data_home = Path(os.environ.get("XDG_DATA_HOME", Path.home() / ".local/share"))
+    shims = data_home / "mise/shims"
+    if not shims.is_dir():
+        return {}
 
-brew_owner() {
-  local link="$brew_prefix/bin/$1" target
+    duplicates: dict[str, set[str]] = {}
+    for shim in shims.iterdir():
+        package = owner(shim.name)
+        if package:
+            duplicates.setdefault(package, set()).add(shim.name)
+    return duplicates
 
-  [ -L "$link" ] || return 1
-  target="$(readlink "$link")"
-  # Links look like ../Cellar/<formula>/<version>/bin/<name>.
-  case "$target" in
-    */Cellar/*) target="${target#*/Cellar/}" && printf '%s\n' "${target%%/*}" ;;
-    *) return 1 ;;
-  esac
-}
 
-# Names of packages installed with an explicit `dnf install` on this machine,
-# skipping the ones the OS image came with. Those are transactions from before
-# the root filesystem existed, recorded by the image build.
-fedora_user_installed() {
-  local installed_after
+def report_duplicates(duplicates: dict[str, set[str]]) -> bool:
+    return report(
+        "Installed by the OS but also managed by mise "
+        "(remove unless something depends on it):",
+        [f"{pkg} ({cmd})" for pkg, cmds in duplicates.items() for cmd in cmds],
+    )
 
-  installed_after="$(stat -c %W /)"
-  dnf history list --json 2>/dev/null |
-    python3 -c '
-import json, subprocess, sys
 
-after = int(sys.argv[1])
-ids = [str(t["id"]) for t in json.load(sys.stdin) if t["start_time"] > after]
-if not ids:
-    sys.exit()
-info = subprocess.run(
-    ["dnf", "history", "info", "--json", *ids],
-    capture_output=True, text=True, check=True,
-).stdout
-for transaction in json.loads(info):
-    for pkg in transaction["packages"]:
-        if pkg["action"] == "Install" and pkg["reason"] == "User":
-            # nevra is name-[epoch:]version-release.arch
-            print(pkg["nevra"].rsplit("-", 2)[0])
-' "$installed_after" | LC_ALL=C sort -u >"$work_dir/history"
+def read_package_list(path: Path) -> set[str]:
+    return {line.split("#", 1)[0].strip() for line in path.read_text().splitlines()} - {
+        ""
+    }
 
-  # Still installed, and still marked as installed by the user.
-  dnf repoquery --userinstalled --qf '%{name}\n' 2>/dev/null |
-    LC_ALL=C sort -u >"$work_dir/userinstalled"
-  LC_ALL=C comm -12 "$work_dir/history" "$work_dir/userinstalled"
-}
 
-drift_fedora() {
-  local list="$repo_root/profiles/linux/fedora/packages.txt"
+def fedora_user_installed() -> set[str]:
+    """Names of packages installed with an explicit `dnf install` on this
+    machine, skipping the ones the OS image came with. Those are transactions
+    from before the root filesystem existed, recorded by the image build."""
+    installed_after = int(run("stat", "-c", "%W", "/"))
+    transactions = json.loads(run("dnf", "history", "list", "--json"))
+    ids = [str(t["id"]) for t in transactions if t["start_time"] > installed_after]
+    if not ids:
+        return set()
 
-  sed -e 's/#.*//' -e 's/[[:space:]]*$//' -e '/^$/d' "$list" |
-    LC_ALL=C sort -u >"$work_dir/wanted"
-  rpm -qa --qf '%{NAME}\n' | LC_ALL=C sort -u >"$work_dir/installed"
-  fedora_user_installed >"$work_dir/user"
-  mise_duplicates rpm_owner >"$work_dir/duplicates"
+    names = set()
+    for transaction in json.loads(run("dnf", "history", "info", "--json", *ids)):
+        for pkg in transaction["packages"]:
+            if pkg["action"] == "Install" and pkg["reason"] == "User":
+                # nevra is name-[epoch:]version-release.arch
+                names.add(pkg["nevra"].rsplit("-", 2)[0])
 
-  LC_ALL=C comm -23 "$work_dir/wanted" "$work_dir/installed" >"$work_dir/missing"
-  LC_ALL=C comm -13 "$work_dir/wanted" "$work_dir/user" |
-    grep -v '^kernel' | without_duplicates >"$work_dir/extra" || true
+    # Still installed, and still marked as installed by the user.
+    user_installed = lines(
+        run("dnf", "repoquery", "--userinstalled", "--qf", "%{name}\n")
+    )
+    return names & user_installed
 
-  report 'In packages.txt but not installed (run scripts/install-packages-linux.sh):' \
-    "$work_dir/missing"
-  report 'Installed with dnf but not in packages.txt (add them or remove them):' \
-    "$work_dir/extra"
-  report 'Installed by the OS but also managed by mise (remove unless something depends on it):' \
-    "$work_dir/duplicates"
-}
 
-drift_darwin() {
-  local brewfile="$repo_root/profiles/darwin/Brewfile"
+def rpm_owner(command: str) -> str | None:
+    path = Path("/usr/bin") / command
+    if not path.exists():
+        return None
+    result = subprocess.run(
+        ["rpm", "-qf", "--qf", "%{NAME}\n", str(path)],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    return result.stdout.strip() if result.returncode == 0 else None
 
-  brew_prefix="$(brew --prefix)"
-  mise_duplicates brew_owner >"$work_dir/duplicates"
 
-  # Without --force, cleanup only lists what it would uninstall.
-  brew bundle check --file "$brewfile" --verbose 2>/dev/null |
-    grep -E '^→ ' | sed 's/^→ //' >"$work_dir/missing" || true
-  brew bundle cleanup --file "$brewfile" 2>/dev/null |
-    grep -vE '^(Would|Run) ' | LC_ALL=C sort -u | without_duplicates \
-    >"$work_dir/extra" || true
+def drift_fedora() -> bool:
+    wanted = read_package_list(REPO_ROOT / "profiles/linux/fedora/packages.txt")
+    installed = lines(run("rpm", "-qa", "--qf", "%{NAME}\n"))
+    duplicates = mise_duplicates(rpm_owner)
 
-  report 'In the Brewfile but not installed (run brew bundle):' "$work_dir/missing"
-  report 'Installed with brew but not in the Brewfile (add them or remove them):' \
-    "$work_dir/extra"
-  report 'Installed by the OS but also managed by mise (remove unless something depends on it):' \
-    "$work_dir/duplicates"
-}
+    missing = wanted - installed
+    extra = {
+        name
+        for name in fedora_user_installed() - wanted - duplicates.keys()
+        if not name.startswith("kernel")
+    }
 
-case "$(detect_os)" in
-  darwin)
-    drift_darwin
-    ;;
-  linux)
-    distro="$(detect_linux_distro)"
-    if [ "$distro" != fedora ]; then
-      printf 'Drift is only checked on Fedora so far (this is %s).\n' "$distro" >&2
-      exit 0
-    fi
-    drift_fedora
-    ;;
-  *)
-    printf 'Unsupported OS.\n' >&2
-    exit 1
-    ;;
-esac
+    found = report(
+        "In packages.txt but not installed (run scripts/install-packages-linux.sh):",
+        missing,
+    )
+    found |= report(
+        "Installed with dnf but not in packages.txt (add them or remove them):", extra
+    )
+    found |= report_duplicates(duplicates)
+    return found
 
-if [ "$drift" -eq 0 ]; then
-  printf 'Installed packages match the package lists.\n'
-fi
+
+def drift_darwin() -> bool:
+    brewfile = str(REPO_ROOT / "profiles/darwin/Brewfile")
+    brew_bin = Path(run("brew", "--prefix").strip()) / "bin"
+
+    def brew_owner(command: str) -> str | None:
+        link = brew_bin / command
+        if not link.is_symlink():
+            return None
+        # Links look like ../Cellar/<formula>/<version>/bin/<name>.
+        parts = Path(os.readlink(link)).parts
+        return parts[parts.index("Cellar") + 1] if "Cellar" in parts else None
+
+    duplicates = mise_duplicates(brew_owner)
+
+    check = run("brew", "bundle", "check", "--file", brewfile, "--verbose", check=False)
+    missing = {line[2:] for line in check.splitlines() if line.startswith("→ ")}
+    # Without --force, cleanup only lists what it would uninstall.
+    cleanup = run("brew", "bundle", "cleanup", "--file", brewfile, check=False)
+    extra = {
+        line for line in lines(cleanup) if not line.startswith(("Would ", "Run "))
+    } - duplicates.keys()
+
+    found = report("In the Brewfile but not installed (run brew bundle):", missing)
+    found |= report(
+        "Installed with brew but not in the Brewfile (add them or remove them):", extra
+    )
+    found |= report_duplicates(duplicates)
+    return found
+
+
+def main() -> int:
+    system = platform.system()
+    if system == "Darwin":
+        found = drift_darwin()
+    elif system == "Linux":
+        distro = linux_distro()
+        if distro != "fedora":
+            print(
+                f"Drift is only checked on Fedora so far (this is {distro}).",
+                file=sys.stderr,
+            )
+            return 0
+        found = drift_fedora()
+    else:
+        print("Unsupported OS.", file=sys.stderr)
+        return 1
+
+    if not found:
+        print("Installed packages match the package lists.")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

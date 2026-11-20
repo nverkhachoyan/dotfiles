@@ -98,4 +98,5 @@ See where the machine and the package lists disagree with:
 It lists packages from the lists that aren't installed, packages you
 installed by hand that aren't in the lists, and OS packages that duplicate a
 tool mise now provides. It never installs or removes anything. On Fedora it
-reads `dnf history`, ignoring what the OS image came with.
+reads `dnf history`, ignoring what the OS image came with. Unlike the other
+scripts it's written in Python and runs through `uv` (installed by mise).

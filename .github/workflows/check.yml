@@ -45,7 +45,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       # git first, so checkout makes a real clone that scripts/check can query.
-      - run: dnf install -y git sudo tar xz
+      - run: dnf install -y git sudo tar xz python3
       - uses: actions/checkout@v5
       - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
