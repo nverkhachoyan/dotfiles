@@ -83,9 +83,11 @@ Update everything with:
 
 `system` upgrades the OS packages (and Flatpaks on Linux) and installs any
 new entries in the package lists. `tools` moves each mise tool to its newest
-allowed version, Rust stable included, and rewrites `mise.lock`. `nvim` syncs
-the Neovim plugins and updates `lazy-lock.json`. Review and commit the
-lockfile diffs it lists at the end.
+allowed version, Rust stable included, rewrites `mise.lock` and removes the
+versions it replaced. `nvim` syncs the Neovim plugins and updates
+`lazy-lock.json`. Review and commit the lockfile diffs it lists at the end.
+Pass `-y` to answer the package managers' prompts; that's the default when
+there's no terminal.
 
 See where the machine and the package lists disagree with:
 

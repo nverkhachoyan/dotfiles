@@ -3,25 +3,33 @@
 set -euo pipefail
 
 # Update everything this repo installs. Pass sections to run only some of
-# them: system, tools, nvim. With none, all run.
+# them: system, tools, nvim. With none, all run. -y/--yes answers the package
+# managers' prompts; it's on by default when there is no terminal to ask on.
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 # shellcheck source=scripts/lib/os.sh
 source "$repo_root/scripts/lib/os.sh"
 
 usage() {
-  printf 'Usage: %s [system] [tools] [nvim]\n' "${0##*/}" >&2
+  printf 'Usage: %s [-y|--yes] [system] [tools] [nvim]\n' "${0##*/}" >&2
   exit 2
 }
 
-sections=("$@")
-[ "${#sections[@]}" -gt 0 ] || sections=(system tools nvim)
-for section in "${sections[@]}"; do
-  case "$section" in
-    system | tools | nvim) ;;
+assume_yes=0
+[ -t 0 ] || assume_yes=1
+
+sections=()
+for arg in "$@"; do
+  case "$arg" in
+    -y | --yes) assume_yes=1 ;;
+    system | tools | nvim) sections+=("$arg") ;;
     *) usage ;;
   esac
 done
+[ "${#sections[@]}" -gt 0 ] || sections=(system tools nvim)
+
+yes_flag=()
+[ "$assume_yes" -eq 0 ] || yes_flag=(-y)
 
 step() {
   printf '\n==> %s\n' "$1"
@@ -39,9 +47,15 @@ update_system() {
     linux)
       step 'System packages'
       case "$(detect_linux_distro)" in
-        fedora) sudo dnf upgrade --refresh ;;
-        arch) sudo pacman -Syu ;;
-        debian) sudo apt-get update && sudo apt-get upgrade ;;
+        fedora) sudo dnf upgrade --refresh "${yes_flag[@]}" ;;
+        arch)
+          if [ "$assume_yes" -eq 1 ]; then
+            sudo pacman -Syu --noconfirm
+          else
+            sudo pacman -Syu
+          fi
+          ;;
+        debian) sudo apt-get update && sudo apt-get upgrade "${yes_flag[@]}" ;;
         *) printf 'No package manager known for this distro, skipping.\n' ;;
       esac
       # Also installs anything added to packages.txt since the last run.
@@ -49,7 +63,11 @@ update_system() {
 
       if command -v flatpak >/dev/null 2>&1; then
         step 'Flatpak'
-        flatpak update
+        if [ "$assume_yes" -eq 1 ]; then
+          flatpak update -y --noninteractive
+        else
+          flatpak update
+        fi
       fi
       ;;
   esac
@@ -57,12 +75,14 @@ update_system() {
 
 update_tools() {
   step 'mise tools'
-  # Moves every tool to the newest version its config.toml entry allows,
-  # rewrites mise.lock and removes the versions it replaced. This includes
-  # Rust stable.
-  mise upgrade --global --prune
+  # Moves every tool to the newest version its config.toml entry allows and
+  # rewrites mise.lock. This includes Rust stable.
+  mise upgrade --global
   # Fill in lockfile entries for the other platforms in lockfile_platforms.
   mise lock --global
+  # Remove versions no tracked config needs any more. `upgrade --prune` leaves
+  # them behind; prune also keeps any version that is still running.
+  mise prune --tools --yes
 }
 
 update_nvim() {
