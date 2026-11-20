@@ -72,7 +72,8 @@ Linux x64 and macOS arm64. Bootstrap installs what the lockfile says, so
 nothing moves until you update it. Run `mise outdated` to see updates; after
 editing `config.toml`, run `mise lock --global` to refresh the lockfile
 (`scripts/check` fails if it's out of date). The `locks/` folder next to it
-holds the dependency locks for npm and pipx tools.
+holds the dependency locks for npm and pipx tools. Change the `rust` entry in
+`config.toml` to use a Rust version other than stable.
 
 Update everything with:
 
@@ -95,5 +96,4 @@ See where the machine and the package lists disagree with:
 It lists packages from the lists that aren't installed, packages you
 installed by hand that aren't in the lists, and OS packages that duplicate a
 tool mise now provides. It never installs or removes anything. On Fedora it
-reads `dnf history`, ignoring what the OS image came with. Change the `rust` entry there to use a Rust version other than
-stable.
+reads `dnf history`, ignoring what the OS image came with.
