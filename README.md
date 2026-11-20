@@ -26,7 +26,8 @@ Bootstrap the current OS with:
 The dispatcher runs `scripts/bootstrap-darwin.sh` on macOS and
 `scripts/bootstrap-linux.sh` on Linux. Both install packages, link configs and
 then run `scripts/install-toolchains.sh`, which installs everything in
-`config/mise/config.toml` and the stable Rust toolchain.
+`config/mise/config.toml`, including the stable Rust toolchain (mise drives
+rustup for it).
 
 Cross-platform CLI tools (ripgrep, fd, bat, fzf, delta, gh, neovim, uv and
 so on) come from mise, so both OSes get the same versions. The OS package
@@ -66,4 +67,5 @@ Alacritty uses the committed Codex Noir theme by default. Select another
 committed theme by changing the import in `config/alacritty/alacritty.toml`.
 
 Tool versions are pinned in `config/mise/config.toml`; run `mise outdated` to
-see updates. Set `RUST_TOOLCHAIN` to install a Rust version other than stable.
+see updates. Change the `rust` entry there to use a Rust version other than
+stable.

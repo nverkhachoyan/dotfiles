@@ -25,6 +25,7 @@ neovim = "0.12.6"
 "pipx:pylint" = "4.0.5"
 ripgrep = "15.2.0"
 ruff = "0.17.5"
+rust = { version = "stable", profile = "minimal", components = "rustfmt,rust-analyzer" }
 stylua = "2.4.0"
 terraform = "1.17.2"
 tree-sitter = "0.27.2"
