@@ -1,0 +1,53 @@
+name: check
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  # Weekly, to catch breakage from upstream (a renamed package, a dead COPR).
+  schedule:
+    - cron: "0 6 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install check dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y shellcheck stow tmux zsh
+
+      - name: Install check dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: brew install shellcheck stow tmux
+
+      - uses: jdx/mise-action@v3
+        with:
+          install: false
+
+      - run: ./scripts/check
+
+  # Run the whole Fedora bootstrap in a fresh container, then the checks.
+  bootstrap-fedora:
+    runs-on: ubuntu-latest
+    container: fedora:latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      # git first, so checkout makes a real clone that scripts/check can query.
+      - run: dnf install -y git sudo tar xz
+      - uses: actions/checkout@v5
+      - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - run: ./scripts/bootstrap
+      - run: ./scripts/check
