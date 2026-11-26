@@ -29,14 +29,14 @@ require_command tmux
 printf '%s\n' 'Checking script syntax...'
 bash -n "$repo_root"/scripts/*.sh "$repo_root"/scripts/lib/*.sh \
   "$repo_root"/scripts/bootstrap "$repo_root"/scripts/check "$repo_root"/scripts/update \
-  "$repo_root"/profiles/linux/*/setup.sh \
+  "$repo_root"/profiles/*/*/setup.sh \
   "$repo_root"/config/shell/bashrc "$repo_root"/config/shell/profile
 zsh -n "$repo_root"/config/shell/zprofile "$repo_root"/config/shell/zshrc
 python3 -c 'import ast, sys; ast.parse(open(sys.argv[1]).read(), sys.argv[1])' \
   "$repo_root"/scripts/drift
 shellcheck -x "$repo_root"/scripts/*.sh "$repo_root"/scripts/lib/*.sh \
   "$repo_root"/scripts/bootstrap "$repo_root"/scripts/check "$repo_root"/scripts/update \
-  "$repo_root"/profiles/linux/*/setup.sh \
+  "$repo_root"/profiles/*/*/setup.sh \
   "$repo_root"/config/shell/bashrc "$repo_root"/config/shell/profile \
   "$repo_root"/config/shell/*.sh "$repo_root"/config/shell/env.d/*.sh
 
@@ -55,7 +55,7 @@ HOME="$check_home" tmux -f "$repo_root/config/tmux/tmux.conf" -L "$tmux_socket" 
 
 printf '%s\n' 'Checking isolated config linking...'
 link_configs() {
-  HOME="$check_home" XDG_CONFIG_HOME="$check_home/.config" \
+  HOME="$check_home" XDG_CONFIG_HOME="$check_home/.config" DOTFILES_PROFILE=desktop \
     "$repo_root/scripts/link-configs.sh" >/dev/null
 }
 
@@ -89,6 +89,30 @@ test -f "$check_home/.config/alacritty/alacritty.toml"
 test -f "$check_home/.config/alacritty/themes/codex-noir.toml"
 test ! -e "$check_home/.config/alacritty/color.toml"
 test -f "$check_home/.config/mise/config.toml"
+
+printf '%s\n' 'Checking vm profile linking...'
+vm_home="$check_home/vm"
+mkdir -p "$vm_home/.config/zed"
+printf '%s\n' '{}' >"$vm_home/.config/zed/settings.json"
+HOME="$vm_home" XDG_CONFIG_HOME="$vm_home/.config" DOTFILES_PROFILE=vm \
+  "$repo_root/scripts/link-configs.sh" >/dev/null
+test -L "$vm_home/.config/nvim"
+test -L "$vm_home/.config/tmux"
+test ! -e "$vm_home/.config/alacritty"
+test ! -e "$vm_home/.config/ghostty"
+# The VM's own zed settings stay put, unlinked and not backed up.
+test ! -L "$vm_home/.config/zed/settings.json"
+test ! -e "$vm_home/.config/zed/settings.json.bak"
+
+printf '%s\n' 'Checking vm profile tool list...'
+config_tools="$(sed -n '/^\[tools\]/,$ s/^"\{0,1\}\([^" =]*\)"\{0,1\} *=.*/\1/p' \
+  "$repo_root/config/mise/config.toml")"
+while IFS= read -r tool; do
+  if ! printf '%s\n' "$config_tools" | grep -qxF "$tool"; then
+    printf 'profiles/vm/tools.txt lists %s, which config/mise/config.toml does not.\n' "$tool" >&2
+    exit 1
+  fi
+done < <(sed -e 's/#.*//' -e 's/[[:space:]]//g' -e '/^$/d' "$repo_root/profiles/vm/tools.txt")
 
 if command -v mise >/dev/null 2>&1; then
   printf '%s\n' 'Checking mise.lock matches config.toml...'

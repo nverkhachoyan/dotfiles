@@ -1,0 +1,19 @@
+btop
+build-essential # cc for nvim-treesitter parsers
+ca-certificates
+curl
+direnv
+eza
+git
+git-lfs
+mise
+openssh-client
+starship
+stow
+tmux
+unzip
+xz-utils
+zoxide
+zsh
+zsh-autosuggestions
+zsh-syntax-highlighting

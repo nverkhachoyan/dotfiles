@@ -7,10 +7,36 @@ repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 # shellcheck source=scripts/lib/os.sh
 source "$repo_root/scripts/lib/os.sh"
 
+usage() {
+  printf 'Usage: %s [--profile desktop|vm]\n' "${0##*/}" >&2
+  exit 2
+}
+
+# The profile is saved, so later runs and scripts/update reuse it.
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --profile)
+      [ "$#" -ge 2 ] || usage
+      save_profile "$2"
+      shift 2
+      ;;
+    --profile=*)
+      save_profile "${1#*=}"
+      shift
+      ;;
+    *) usage ;;
+  esac
+done
+
 os="$(detect_os)"
+if [ "$os" = darwin ] && [ "$(detect_profile)" = vm ]; then
+  printf 'The vm profile is Linux only.\n' >&2
+  exit 1
+fi
+
 case "$os" in
   darwin | linux)
-    exec "$repo_root/scripts/bootstrap-$os.sh" "$@"
+    exec "$repo_root/scripts/bootstrap-$os.sh"
     ;;
   *)
     printf 'Unsupported OS: %s\n' "$os" >&2

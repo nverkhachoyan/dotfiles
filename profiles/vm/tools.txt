@@ -1,0 +1,13 @@
+# mise tools a VM installs, by their name in config/mise/config.toml.
+# Versions still come from mise.lock.
+bat
+delta
+fd
+fzf
+gh
+github:joshmedeski/sesh # tmux prefix+f
+lazygit
+neovim
+ripgrep
+tree-sitter # nvim-treesitter compiles parsers with it
+uv

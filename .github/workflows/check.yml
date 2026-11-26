@@ -51,3 +51,19 @@ jobs:
 
       - run: ./scripts/bootstrap
       - run: ./scripts/check
+
+  # The same for the headless VM profile, on the Ubuntu release the VM runs.
+  bootstrap-vm-ubuntu:
+    runs-on: ubuntu-latest
+    container: ubuntu:26.04
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - run: apt-get update && apt-get install -y git sudo python3
+      - uses: actions/checkout@v5
+      - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - run: ./scripts/bootstrap --profile vm
+      # The check needs shellcheck, which the vm profile doesn't install.
+      - run: sudo apt-get install -y shellcheck
+      - run: ./scripts/check

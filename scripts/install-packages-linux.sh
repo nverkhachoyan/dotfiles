@@ -8,17 +8,18 @@ repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "$repo_root/scripts/lib/os.sh"
 
 distro="$(detect_linux_distro)"
-profile="$repo_root/profiles/linux/$distro"
+profile="$(linux_profile_dir "$repo_root")"
 
 if [ ! -f "$profile/packages.txt" ]; then
-  printf 'No package list for %s, skipping package install.\n' "$distro" >&2
+  printf 'No package list for %s (%s profile), skipping package install.\n' \
+    "$distro" "$(detect_profile)" >&2
   exit 0
 fi
 
 packages=()
 while IFS= read -r pkg; do
   packages+=("$pkg")
-done < <(sed -e 's/#.*//' -e '/^[[:space:]]*$/d' "$profile/packages.txt")
+done < <(sed -e 's/#.*//' -e 's/[[:space:]]*$//' -e '/^$/d' "$profile/packages.txt")
 
 if [ -f "$profile/setup.sh" ]; then
   bash "$profile/setup.sh"

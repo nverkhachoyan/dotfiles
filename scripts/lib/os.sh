@@ -58,3 +58,48 @@ detect_linux_distro() {
 
   printf 'unknown\n'
 }
+
+# The machine profile picks what bootstrap installs: "desktop" (the default)
+# or "vm" for a headless server. `scripts/bootstrap --profile vm` saves it.
+profile_file() {
+  printf '%s/dotfiles/profile\n' "${XDG_CONFIG_HOME:-$HOME/.config}"
+}
+
+detect_profile() {
+  local profile="${DOTFILES_PROFILE:-}" file
+
+  file="$(profile_file)"
+  if [ -z "$profile" ] && [ -r "$file" ]; then
+    read -r profile <"$file" || true
+  fi
+
+  printf '%s\n' "${profile:-desktop}"
+}
+
+save_profile() {
+  local profile="$1" file
+
+  case "$profile" in
+    desktop | vm) ;;
+    *)
+      printf 'Unknown profile: %s (expected desktop or vm)\n' "$profile" >&2
+      return 1
+      ;;
+  esac
+
+  file="$(profile_file)"
+  mkdir -p "$(dirname "$file")"
+  printf '%s\n' "$profile" >"$file"
+}
+
+# Where the package list and setup.sh for this Linux machine live.
+linux_profile_dir() {
+  local repo_root="$1" distro
+
+  distro="$(detect_linux_distro)"
+  if [ "$(detect_profile)" = vm ]; then
+    printf '%s/profiles/vm/%s\n' "$repo_root" "$distro"
+  else
+    printf '%s/profiles/linux/%s\n' "$repo_root" "$distro"
+  fi
+}

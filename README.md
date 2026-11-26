@@ -23,6 +23,10 @@ Bootstrap the current OS with:
 ./scripts/bootstrap
 ```
 
+On a headless server or VM, run `./scripts/bootstrap --profile vm` instead.
+It installs a smaller set of packages and tools and skips the desktop pieces;
+see `profiles/vm/README.md`.
+
 The dispatcher runs `scripts/bootstrap-darwin.sh` on macOS and
 `scripts/bootstrap-linux.sh` on Linux. Both install packages, link configs and
 then run `scripts/install-toolchains.sh`, which installs everything in

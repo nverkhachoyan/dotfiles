@@ -5,6 +5,8 @@ set -euo pipefail
 # Update everything this repo installs. Pass sections to run only some of
 # them: system, tools, nvim. With none, all run. -y/--yes answers the package
 # managers' prompts; it's on by default when there is no terminal to ask on.
+# On the vm profile, tools and nvim install what the lockfiles say instead of
+# updating them.
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 # shellcheck source=scripts/lib/os.sh
@@ -27,6 +29,8 @@ for arg in "$@"; do
   esac
 done
 [ "${#sections[@]}" -gt 0 ] || sections=(system tools nvim)
+
+profile="$(detect_profile)"
 
 yes_flag=()
 [ "$assume_yes" -eq 0 ] || yes_flag=(-y)
@@ -74,6 +78,15 @@ update_system() {
 }
 
 update_tools() {
+  if [ "$profile" = vm ]; then
+    # A VM follows the lockfile committed from a desktop instead of moving it:
+    # pull the repo, then install and prune to match.
+    step 'mise tools (from mise.lock)'
+    "$repo_root/scripts/install-toolchains.sh"
+    mise prune --tools --yes
+    return
+  fi
+
   step 'mise tools'
   # Moves every tool to the newest version its config.toml entry allows and
   # rewrites mise.lock. This includes Rust stable.
@@ -86,6 +99,12 @@ update_tools() {
 }
 
 update_nvim() {
+  if [ "$profile" = vm ]; then
+    step 'Neovim plugins (from lazy-lock.json)'
+    nvim --headless '+Lazy! restore' +qa
+    return
+  fi
+
   step 'Neovim plugins'
   # Updates lazy-lock.json in the repo; the plugin build steps run too
   # (nvim-treesitter's :TSUpdate).

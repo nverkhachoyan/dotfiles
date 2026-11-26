@@ -6,6 +6,8 @@ Linux uses the shared configs under `config/`. Each distro folder here can add:
 - `setup.sh`: optional, runs before the install (for example, enabling repos).
 
 `scripts/install-packages-linux.sh` picks the folder from `/etc/os-release`.
+Machines on the vm profile use `profiles/vm/<distro>/` instead (see
+`profiles/vm/README.md`).
 Only `fedora/` exists today. Distros without a folder skip the package step
 and only get configs linked.
 

@@ -5,6 +5,9 @@ set -euo pipefail
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 stow_bin="$(command -v stow || true)"
 
+# shellcheck source=scripts/lib/os.sh
+source "$repo_root/scripts/lib/os.sh"
+
 if [ -z "$stow_bin" ]; then
   printf 'Missing required command: stow\n' >&2
   printf 'Install GNU Stow and run this script again.\n' >&2
@@ -15,6 +18,21 @@ mkdir -p "$HOME/.config" "$HOME/.ssh/config.d"
 
 repo_real="$(cd "$repo_root" && pwd -P)"
 
+# Desktop app configs a headless VM has no use for. They aren't linked, and
+# whatever the VM already has there is left alone.
+skip_configs=()
+if [ "$(detect_profile)" = vm ]; then
+  skip_configs=(alacritty ghostty zed)
+fi
+
+is_skipped() {
+  local name
+  for name in ${skip_configs[@]+"${skip_configs[@]}"}; do
+    [ "$1" = "$name" ] && return 0
+  done
+  return 1
+}
+
 backup_file() {
   local target="$1" backup="$1.bak"
 
@@ -23,11 +41,16 @@ backup_file() {
   printf 'Backed up %s -> %s\n' "$target" "$backup"
 }
 
+top_dir() {
+  printf '%s\n' "${1%%/*}"
+}
+
 # Move real files out of the way so stow can link over them.
 backup_conflicts() {
   local package_dir="$1" target_dir="$2" source target parent
 
   while IFS= read -r -d '' source; do
+    is_skipped "$(top_dir "${source#"$package_dir"/}")" && continue
     target="$target_dir/${source#"$package_dir"/}"
     parent="$(dirname "$target")"
 
@@ -52,7 +75,14 @@ fi
 backup_conflicts "$repo_root/config" "$HOME/.config"
 backup_conflicts "$repo_root/home" "$HOME"
 
-"$stow_bin" --dir="$repo_root" --target="$HOME/.config" --restow config
+config_ignores=()
+if [ "${#skip_configs[@]}" -gt 0 ]; then
+  # Stow matches an anchored pattern against each file's name.
+  config_ignores=("--ignore=^($(IFS='|' && printf '%s' "${skip_configs[*]}"))\$")
+fi
+
+"$stow_bin" --dir="$repo_root" --target="$HOME/.config" \
+  ${config_ignores[@]+"${config_ignores[@]}"} --restow config
 "$stow_bin" --dir="$repo_root" --target="$HOME" --restow home
 
 # Shell startup files are local stubs that load the shared files in
